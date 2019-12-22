@@ -54,6 +54,12 @@ Cuando hayamos raptado al individuo, podremos hacer diferentes cosas:
 
 Tus compañeros de nave atraparán terrícolas, sin necesidad de que tu esperes por ellos. En pocas palabras, la tarea para aceptar conexiones, correrá en segundo plano.
 
+### Abducción en vivo ###
+
+Accediendo al menu de abducciones, podremos solicitar ver en vivo la captura de humanos.
+
+
+
 ## Laboratorio ##
 
 ### Ver a los individuos que hayas raptado ###
