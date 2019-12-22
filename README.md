@@ -13,8 +13,8 @@ Se trata de un videojuego terminal. Tú eres un Furon (raza extraterrestre avanz
 ## Como descargar e instalar? ##
 
 ```
-git clone https://github.com/Kirari-Senpai/invasores-2.git
-cd invasores-2/
+git clone https://github.com/Kirari-Senpai/invasores-2e.git
+cd invasores-2e/
 pip3 install -r requirements.txt
 cd server/
 ```
