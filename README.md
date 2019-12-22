@@ -45,7 +45,7 @@ Cuando hayamos raptado al individuo, podremos hacer diferentes cosas:
 - Keylogger (en desarrollo)
 - Grabar audio (en desarrollo)
 - Screenshot (en desarrollo)
-- Instalarse en el sistema (en desarrollo)
+- Persistencia
 - Autoremoverse (en desarrollo)
 - Ransomware (en desarrollo)
 
