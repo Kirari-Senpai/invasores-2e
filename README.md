@@ -58,7 +58,7 @@ Tus compañeros de nave atraparán terrícolas, sin necesidad de que tu esperes 
 
 Accediendo al menu de abducciones, podremos solicitar ver en vivo la captura de humanos.
 
-
+![](gifs/abduccionLive.gif)
 
 ## Laboratorio ##
 
