@@ -165,15 +165,15 @@ Un sistema operativo basado en Linux. Recomiendo Kali Linux en su última versi�
 
 ## :octocat: Como contribuir al proyecto
 
-Todas las contribuciones son bienvenidas! Código, documentación, gráficos o incluso sugerencias de diseño son bienvenidos; usa GitHub al máximo. Envíe solicitudes de extracción, contribuya con tutoriales u otro contenido; lo que tenga que ofrecer, ¡lo agradeceríamos!
+Todas las contribuciones son bienvenidas! Código, documentación, gráficos o incluso sugerencias de diseño son bienvenidos; usa GitHub al máximo. Envíe solicitudes de extracción, contribuya con tutoriales u otro contenido; lo que tenga que ofrecer, ¡lo agradecería!
 
 ## Relacionado al trabajo ##
 
-Me encanta utilizar Sublime Text y Terminato :)
+Me encanta utilizar Sublime Text y Terminator :)
 
 ## Disclaimer ##
 
-Invasores está destinado a ser utilizado solo con fines de seguridad legal, y solo debe usarlo para ver el funcionamiento simple de una botnet en un entorno controlado. Cualquier otro uso no es responsabilidad del desarrollador(es). En otras palabras, no seas estúpido, no seas un imbécil y utiliza esta herramienta de manera responsable y legal.
+Invasores está destinado a ser utilizado solo con fines de seguridad legal, y solo debe usarlo para ver el funcionamiento simple de una botnet en un entorno controlado. Cualquier otro uso no es responsabilidad del desarrollador. En otras palabras, no seas estúpido, no seas un imbécil y utiliza esta herramienta de manera responsable y legal.
 
 
 Advertencia: el mismo está en pleno desarrollo, por lo tanto, puede presentar errores durante su ejecución.
