@@ -3,7 +3,7 @@
     <img src="https://img.shields.io/badge/Hecho%20en-Python3-orange">
     <a href="https://github.com/Kirari-Senpai"><img src="https://img.shields.io/badge/Creado%20por-Kirari-green"></a>
     <a href="https://github.com/Kirari-Senpai?tab=repositories"><img src="https://img.shields.io/badge/Ver%20m%C3%A1s-repositorios-yellow"></a>
-    <a href="https://www.youtube.com/channel/UCTJL346jNxHSM2lWorpTVyw"><img src="https://img.shields.io/badge/Canal%20de%20YT-TheSpactra-red"></a>
+    <a href="https://www.youtube.com/channel/UCTJL346jNxHSM2lWorpTVyw"><img src="https://img.shields.io/badge/Canal%20de%20YT-TheSpactra-red"></a><br><br>
     
 Se trata de un videojuego terminal. Tú eres un Furon (raza extraterrestre avanzada), una especie bélica, con tecnología extremadamente mortal. Por lo cual te diriges a la tierra para poder experimentar, manipular, atacar a otras especies, etc. Tú decides que hacer con ellos. Desde controlar a un simple humano para sacarle información, hasta utilizar un ejército completo para atacar a otros lugares (notorio de esta especie). Algo optativo, es que puedes evitar ser detectado por medio de una habilidad llamada Holobob, ya descubrirás como utilizarla, sólo sé paciente!. Este simple juego esta hecho para entornos reales (basada en el modelo Cliente-Servidor).
 
