@@ -1,6 +1,7 @@
 <p align="center">
     <img src="logos/alien1.png" height="300" width="400">
-
+https://img.shields.io/badge/<LABEL>-<MESSAGE>-<yellow>
+    
 Se trata de un videojuego terminal. Tú eres un Furon (raza extraterrestre avanzada), una especie bélica, con tecnología extremadamente mortal. Por lo cual te diriges a la tierra para poder experimentar, manipular, atacar a otras especies, etc. Tú decides que hacer con ellos. Desde controlar a un simple humano para sacarle información, hasta utilizar un ejército completo para atacar a otros lugares (notorio de esta especie). Algo optativo, es que puedes evitar ser detectado por medio de una habilidad llamada Holobob, ya descubrirás como utilizarla, sólo sé paciente!. Este simple juego esta hecho para entornos reales (basada en el modelo Cliente-Servidor).
 
 </p>
