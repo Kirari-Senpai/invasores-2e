@@ -2,6 +2,7 @@
 # CONFIGURACIONES PARA EL SERVIDOR ALIENIGENA
 
 import os
+import sys
 import time
 import socket
 import ctypes
@@ -15,6 +16,10 @@ from utilidades.banners import *
 
 
 # ----------------------------------------------------------------------------------------
+
+
+# MODO LIVE PARA ABDUCCION 
+EnVivo=False
 
 
 def cargar_banda_sonora(musica):
@@ -34,6 +39,8 @@ def cartelAyuda():
 def encabezados(banner):
 	os.system('clear')
 	if banner=="principal":
+		banner_principal()
+	elif banner=="secundario":
 		banner_secundario()
 	elif banner=="abduccion":
 		banner_abduction_menu()
@@ -405,6 +412,26 @@ def laboratorio(servidor):
 	return
 
 
+def AbduccionEnVivo(servidor):
+	global EnVivo
+
+	if (EnVivo==False):
+		EnVivo=True
+		servidor.VerAbducciones()
+	else:
+		print(" Modo abduccion en vivo: activo")
+		activar = (input(" El modo abduccion en vivo se encuentra activa. Desea apagarla? (s/n): ")).lower()
+		while (activar!="s") and (activar!="n"):
+			print(" Opcion inexistente... Intente nuevamente...")
+			activar = (input(" El modo abduccion en vivo se encuentra activa. Desea apagarla? (s/n): ")).lower()
+		if (activar=="s"):
+			os.system('pkill -9 -f xterm')
+			EnVivo=False
+			print(" Modo abduccion en vivo: desactivado")
+			time.sleep(2.5)
+	return
+
+
 def abducciones_menu(servidor):
 
 	COMANDOS = {
@@ -426,7 +453,7 @@ def abducciones_menu(servidor):
 	while (selector!='volver'):
 
 		if (selector=='pantalla'):
-			servidor.VerAbducciones()
+			AbduccionEnVivo(servidor)
 			encabezados("abduccion")
 
 		elif (selector=='abducidos'):
@@ -466,25 +493,25 @@ def menu():
 	pygame.init()
 	cargar_banda_sonora("/musica/laboratory.mp3")
 
-	encabezados("principal")
+	encabezados("secundario")
 
 	opcion = (input(" \033[0;39mInvasores (\033[0;31mPrincipal\033[0;39m) --> \033[0;39m").lower()).replace(" ","")
 
-	while(opcion!="salir"):
+	while(opcion!="volver"):
 
 		if(opcion=="abducir"):
 			abducciones_menu(servidor)
 			cargar_banda_sonora("/musica/laboratory.mp3")
-			encabezados("principal")
+			encabezados("secundario")
 		elif(opcion=="laboratorio"):
 			laboratorio(servidor)
-			encabezados("principal")
+			encabezados("secundario")
 		elif(opcion=="destruirlos"):
 			servidor.matar_terricolas()
 		elif(opcion=="ayuda"):
 			desplegar_ayuda(COMANDOS)
 		elif(opcion=="limpiar"):
-			encabezados("principal")
+			encabezados("secundario")
 		elif(opcion==''):
 			pass
 		else:
@@ -493,6 +520,8 @@ def menu():
 
 		opcion = (input(" \033[0;39mInvasores (\033[0;31mPrincipal\033[0;39m) --> \033[0;39m").lower()).replace(" ","")
 
+	os.system('pkill -9 -f xterm')
+	os.system('clear')
 	servidor.detener()
 
 	return
