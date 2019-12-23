@@ -42,6 +42,7 @@ Antes de empezar, no podemos operar con alguien si no la abducimos, por tanto, s
 Cuando hayamos raptado al individuo, podremos hacer diferentes cosas:
 
 - Manejarlo a nuestro antojo medianta una shell
+- Netcat
 - Keylogger (en desarrollo)
 - Grabar audio (en desarrollo)
 - Screenshot (en desarrollo)
@@ -124,8 +125,13 @@ drwxr-xr-x 3 kirari kirari 4096 nov 20 22:33 Modulos
  Comando utilizado: pwd
 
  (kirari)> 
-
+ 
 ```
+
+### Netcat ###
+
+Si estabas dudando de esto, bueno es cierto, tenemos soporte con Netcat. En el peor de los casos, que nos sintamos inseguros con la shell común, podremos usar el módulo de Netcat para el mismo fín, pero mucho mejor. 
+
 ### Keylogger ###
 
 Graba cualquier movimiento que la víctima haga mediante pulsaciones en el teclado. Toda la información se registrará en un archivo.
