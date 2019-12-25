@@ -116,13 +116,9 @@ drwxr-xr-x 5 kirari kirari 4096 nov 19 23:54 ..
 -rw-r--r-- 1 kirari kirari 4665 nov 21 02:10 humano.py
 drwxr-xr-x 3 kirari kirari 4096 nov 20 22:33 Modulos
 
- Comando utilizado: ls -la
-
  (kirari)> pwd
-
+ 
 /home/kirari/Escritorio/
-
- Comando utilizado: pwd
 
  (kirari)> 
  
