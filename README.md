@@ -30,7 +30,7 @@ python3 invasores.py
 La curiosa persona se acerca a tu nave, pero todavía no sabe que le espera...
 
 ```
-python3 humano.py <ip> <port>
+python3 client.py <ip> <port>
 ```
 
 ## Que se puede hacer con invasores? ##
@@ -114,7 +114,7 @@ Devuelve una shell. Acá un ejemplo:
 total 20
 drwxr-xr-x 3 kirari kirari 4096 nov 20 22:32 .
 drwxr-xr-x 5 kirari kirari 4096 nov 19 23:54 ..
--rw-r--r-- 1 kirari kirari 4665 nov 21 02:10 humano.py
+-rw-r--r-- 1 kirari kirari 4665 nov 21 02:10 client.py
 drwxr-xr-x 3 kirari kirari 4096 nov 20 22:33 Modulos
 
  (kirari)> pwd
