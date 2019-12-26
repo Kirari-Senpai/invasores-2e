@@ -129,7 +129,7 @@ drwxr-xr-x 3 kirari kirari 4096 nov 20 22:33 Modulos
 
 Si estabas dudando de esto, bueno es cierto, tenemos soporte con Netcat. En el peor de los casos, que nos sintamos inseguros con la shell común, podremos usar el módulo de Netcat para el mismo fín, pero mucho mejor. 
 
-## Subir y descargar archivos ##
+### Subir y descargar archivos ###
 
 Claramente como lo dice el subtitulo, podrás subir cualquier archivo de tú máquina al del equipo víctima. Igualmente vas a poder descargar cualquier archivo del secuestrado.
 
