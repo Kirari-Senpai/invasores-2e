@@ -43,6 +43,7 @@ Cuando hayamos raptado al individuo, podremos hacer diferentes cosas:
 
 - Manejarlo a nuestro antojo medianta una shell
 - Netcat
+- Subir y descargar archivos
 - Keylogger (en desarrollo)
 - Grabar audio (en desarrollo)
 - Screenshot (en desarrollo)
@@ -127,6 +128,10 @@ drwxr-xr-x 3 kirari kirari 4096 nov 20 22:33 Modulos
 ### Netcat ###
 
 Si estabas dudando de esto, bueno es cierto, tenemos soporte con Netcat. En el peor de los casos, que nos sintamos inseguros con la shell común, podremos usar el módulo de Netcat para el mismo fín, pero mucho mejor. 
+
+## Subir y descargar archivos ##
+
+Claramente como lo dice el subtitulo, podrás subir cualquier archivo de tú máquina al del equipo víctima. Igualmente vas a poder descargar cualquier archivo del secuestrado.
 
 ### Keylogger ###
 
