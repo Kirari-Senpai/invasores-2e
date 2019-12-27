@@ -42,7 +42,7 @@ Antes de empezar, no podemos operar con alguien si no la abducimos, por tanto, s
 Cuando hayamos raptado al individuo, podremos hacer diferentes cosas:
 
 - Manejarlo a nuestro antojo medianta una shell
-- Netcat
+- Netcat (en desarrollo)
 - Subir y descargar archivos
 - Keylogger (en desarrollo)
 - Grabar audio (en desarrollo)
