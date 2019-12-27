@@ -37,7 +37,7 @@ def cargar_banda_sonora(musica):
 def cartelAyuda():
 	print("""\033[0;39m
 
- \033[1;31m[-] Puedes tipear 'ayuda' para ver los comandos disponibles
+ \033[1;31m[-] Puedes tipear 'ayuda' para ver los comandos disponibles \033[0;39m
 
 	""")
 	return
@@ -410,13 +410,13 @@ class Control():
 				return
 
 			elif (re.match("subir(\d|\w)",subida)):
-				print('\n [\033[1;31mx\033[0;39m] Comando "',subida,'" no encontrado.\n')
+				print('\n [\033[1;31mx\033[0;39m] Comando "'+subida+'" no encontrado.\n')
 				return
 
 			else:
 				subida = (subida.replace('subir','')).split()
 				if (len(subida)!=2):
-					print (" Faltan argumentos...")
+					print (" [\033[1;31mx\033[0;39m] Faltan argumentos...")
 					return False
 
 		else:
@@ -428,10 +428,10 @@ class Control():
 				if (os.path.exists(subida[0])):
 					pass
 				else:
-					print (" El archivo que quieres subir no existe.")
+					print (" [\033[1;31mx\033[0;39m] El archivo que quieres subir no existe.")
 					return False
 			else:
-				print (" Ruta origen no existe o no se especifico archivo.")
+				print (" [\033[1;31mx\033[0;39m] Ruta origen no existe o no se especifico archivo.")
 				return False
 
 		origen = subida[0]
@@ -459,10 +459,10 @@ class Control():
 						self.objetivo.sendall(contenido)
 						contenido = archivo_origen.read(1024)
 
-			print(" El archivo se subio correctamente.")    
+			print(" [\033[1;32m+\033[0;39m] El archivo se subio correctamente.")    
 
 		else:
-			print (" Ruta destino no existe o no se especifico nombre de nuevo archivo.")
+			print (" [\033[1;31mx\033[0;39m] Ruta destino no existe o no se especifico nombre de nuevo archivo.")
 
 		return
 
@@ -476,13 +476,13 @@ class Control():
 				return
 
 			elif (re.match("descargar(\d|\w)",bajada)):
-				print('\n [\033[1;31mx\033[0;39m] Comando "',bajada,'" no encontrado.\n')
+				print('\n [\033[1;31mx\033[0;39m] Comando "'+bajada+'" no encontrado.\n')
 				return
 
 			else:
 				bajada = (bajada.replace('descargar','')).split()
 				if (len(bajada)!=2):
-					print (" Faltan argumentos...")
+					print (" [\033[1;31mx\033[0;39m] Faltan argumentos...")
 					return False
 
 		else:
@@ -493,7 +493,7 @@ class Control():
 			if (control_ruta(bajada[1],"/")):
 				pass
 			else:
-				print (" Ruta destino no existe o no se especifico nombre de nuevo archivo.")
+				print (" [\033[1;31mx\033[0;39m] Ruta destino no existe o no se especifico nombre de nuevo archivo.")
 				return False
 
 
@@ -527,10 +527,10 @@ class Control():
 					size-=len(contenido)
 					#print(size)
 
-			print(" El archivo se descargo correctamente.")   
+			print(" [\033[1;32m+\033[0;39m] El archivo se descargo correctamente.")   
 
 		else:
-			print (" Ruta origen no existe o no se especifico archivo.")
+			print (" [\033[1;31mx\033[0;39m] Ruta origen no existe o no se especifico archivo.")
 			
 		return
 
@@ -554,7 +554,7 @@ class Control():
 				return
 
 			elif (re.match("cd(\d|\w)",ruta)):
-				print('\n [\033[1;31mx\033[0;39m] Comando "',ruta,'" no encontrado.\n')
+				print('\n [\033[1;31mx\033[0;39m] Comando "'+ruta+'" no encontrado.\n')
 				return
 
 		else:
@@ -681,7 +681,7 @@ def manipular(servidor,cliente):
 			pass
 
 		else:
-			print('\n [\033[1;31mx\033[0;39m] Comando "',victima, '" no encontrado.\n')
+			print('\n [\033[1;31mx\033[0;39m] Comando "'+victima+'" no encontrado.\n')
 
 		victima = (input(" \033[0;39mInvasores (\033[0;33mLaboratorio/" + servidor.terricolas[cliente][2] + "\033[0;39m) --> \033[0;39m")).strip()
 
@@ -743,7 +743,7 @@ def laboratorio(servidor):
 					if (cliente < len(servidor.terricolas)) and (cliente>=0):
 						servidor.matar_terricola(cliente)
 						lista_terricolas_table.pop(cliente)
-						print("\n [\033[1;34m*\033[0;39m] " + ataques())
+						print("\n [\033[1;34m*\033[0;39m] " + ataques() + "\n")
 					else:
 						print (" \n [\033[1;31mx\033[0;39m] No existe el terricola indicado...\n");
 
@@ -772,7 +772,7 @@ def laboratorio(servidor):
 			pass
 
 		else:
-			print('\n [\033[1;31mx\033[0;39m] Comando "', prompt_laboratorio, '" no encontrado.\n')
+			print('\n [\033[1;31mx\033[0;39m] Comando "'+ prompt_laboratorio+ '" no encontrado.\n')
 
 
 		prompt_laboratorio = (input(" \033[0;39mInvasores (\033[0;31mLaboratorio\033[0;39m) --> \033[0;39m").lower()).strip()
@@ -835,7 +835,7 @@ def abducciones_menu(servidor):
 			pass
 
 		else:
-			print('\n [\033[1;31mx\033[0;39m] Comando "', selector, '" no encontrado.\n')
+			print('\n [\033[1;31mx\033[0;39m] Comando "'+ selector + '" no encontrado.\n')
 
 		selector = (input(" \033[0;39mInvasores (\033[0;31mAbducciones\033[0;39m) --> \033[0;39m").lower()).replace(" ","")
 
@@ -881,7 +881,7 @@ def menu():
 		elif(opcion==''):
 			pass
 		else:
-			print('\n [\033[1;31mx\033[0;39m] Comando "', opcion, '" no encontrado.\n')
+			print('\n [\033[1;31mx\033[0;39m] Comando "' + opcion + '" no encontrado.\n')
 
 
 		opcion = (input(" \033[0;39mInvasores (\033[0;31mPrincipal\033[0;39m) --> \033[0;39m").lower()).replace(" ","")
