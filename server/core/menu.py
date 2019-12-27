@@ -41,6 +41,7 @@ def menu_interactivo():
 		if(opcion=="comenzar"):
 			pygame.mixer.music.stop()
 			os.system('python3 core/mothership.py')
+			#input()
 			pygame.mixer.music.load(os.getcwd() + "/core/musica/main.mp3")
 			pygame.mixer.music.play(loops=-1)
 			os.system('clear')
