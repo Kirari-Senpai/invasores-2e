@@ -232,7 +232,8 @@ class Server(Thread):
 
 
 	def VerAbducciones(self):
-		os.system('xterm -hold -fg white -bg black -geometry 93x31+0+100 -title "Abduccion en vivo" -e python3 core/abducciones/pantalla.py &')
+		# -hold en xterm es para que la ventana quede estatica y no se cierre al terminar el programa
+		os.system('xterm -fg white -bg black -geometry 93x31+0+100 -title "Abduccion en vivo" -e python3 core/abducciones/pantalla.py &')
 		return
 
 
