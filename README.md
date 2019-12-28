@@ -27,19 +27,15 @@ python3 invasores.py
 
 ## Persona curiosa ##
 
-La curiosa persona se acerca a tu nave, pero todavía no sabe que le espera...
-
-```
-python3 client.py
-```
-
-También puedes crear el ejecutable del mismo, haciendo lo siguiente:
+Antes de atraer a la víctima, necesitamos crear un señuelo, con el cual atraeremos y controlaremos al capturado. Para esto, hacemos lo siguiente:
 
 ```
 pyinstaller --noconsole --onefile client.py
 ```
 
-Luego de esto, podrás ejecutarlo de la siguiente manera:
+La curiosa persona se acerca a tu nave, pero todavía no sabe que le espera...
+
+Para ejecutar el señuelo, haremos esto:
 
 ```
 ./client
