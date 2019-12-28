@@ -33,6 +33,24 @@ La curiosa persona se acerca a tu nave, pero todavía no sabe que le espera...
 python3 client.py <ip> <port>
 ```
 
+También puedes crear el ejecutable del mismo, haciendo lo siguiente:
+
+```
+pyinstaller --onefile client.py
+```
+
+Luego de esto, podrás ejecutarlo de la siguiente manera:
+
+```
+./client <ip> <port>
+```
+
+Ó
+
+```
+client.exe <ip> <port>
+```
+
 ## Que se puede hacer con invasores? ##
 
 Antes de empezar, no podemos operar con alguien si no la abducimos, por tanto, se realizará lo siguiente:
