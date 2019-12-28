@@ -207,7 +207,7 @@ class Server(Thread):
 	# --------- ESCRIBIR INFORMACION --------- 
 
 	def EscribirInformacion(self,info):
-		inf = "['"+info[2]+"',"+str(info[3])+","+str(info[1][1])+"]\n"
+		inf = "['"+info[2]+"',"+str(info[4])+","+str(info[1][1])+"]\n"
 		with open('core/abducciones/capturados.txt','a+') as archivo:
 			archivo.write(inf)
 		return
