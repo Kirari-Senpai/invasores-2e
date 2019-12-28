@@ -45,7 +45,7 @@ Luego de esto, podrás ejecutarlo de la siguiente manera:
 ./client <ip> <port>
 ```
 
-Ó
+ó
 
 ```
 client.exe <ip> <port>
