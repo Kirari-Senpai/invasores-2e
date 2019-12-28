@@ -62,7 +62,7 @@ Cuando hayamos raptado al individuo, podremos hacer diferentes cosas:
 - Grabar audio (en desarrollo)
 - Screenshot (en desarrollo)
 - Persistencia
-- Autoremoverse (en desarrollo)
+- Autoremoverse
 - Deshabilitar administrador de tareas
 - Ransomware (en desarrollo)
 
