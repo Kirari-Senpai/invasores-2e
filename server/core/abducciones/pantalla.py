@@ -56,6 +56,7 @@ try:
 		for line in file.readlines():
 			if (line not in lineas):
 				lineas.append(line)
+				#print(line)
 				client = ast.literal_eval(line)
 				chain_alien ("\n [\033[1;34m*\033[0;39m] Abduciendo a {0} de {1},{2} en {3}\n".format(client[0], client[1]['city_name'], client[1]['state'], client[1]["country_name"]))
 				chain_alien (" [\033[1;32m+\033[0;39m] Terricola {} esta a bordo!\n\n".format(client[0]))
@@ -66,7 +67,7 @@ try:
 
 except KeyboardInterrupt:
 	pygame.init()
-	a = pygame.mixer.Sound('efectos/effect1.wav')
+	a = pygame.mixer.Sound('core/efectos/effect1.wav')
 	a.play()
 	print ("\n [\033[1;32m+\033[0;39m] Abduccion en vivo terminada!"); 
-	time.sleep(3)
+	time.sleep(4)
