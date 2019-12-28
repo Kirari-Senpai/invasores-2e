@@ -104,7 +104,7 @@ def control_ruta(path,signo):
 	if (ruta.pop()!=""):
 		verificar_ruta = signo.join(ruta)
 
-		if (os.path.exists(verificar_ruta)):
+		if (os.path.isdir(verificar_ruta)):
 			return True
 		else:
 			return False
@@ -461,10 +461,14 @@ class Control():
 
 			print(" [\033[1;32m+\033[0;39m] El archivo se subio correctamente.")    
 
+		elif (respuesta=="directorio"):
+			print (" [\033[1;31mx\033[0;39m] Ruta destino es un directorio.")
+
 		else:
 			print (" [\033[1;31mx\033[0;39m] Ruta destino no existe o no se especifico nombre de nuevo archivo.")
 
 		return
+
 
 
 	def descargar_archivos(self,bajada):
@@ -489,9 +493,16 @@ class Control():
 			return False
 
 
+
 		if (len(bajada)==2):
+			
+			if os.path.isdir(bajada[1]):
+				print (" [\033[1;31mx\033[0;39m] Ruta destino es un directorio.")
+				return False
+
 			if (control_ruta(bajada[1],"/")):
 				pass
+				
 			else:
 				print (" [\033[1;31mx\033[0;39m] Ruta destino no existe o no se especifico nombre de nuevo archivo.")
 				return False
