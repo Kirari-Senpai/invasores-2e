@@ -56,15 +56,11 @@ Antes de empezar, no podemos operar con alguien si no la abducimos, por tanto, s
 Cuando hayamos raptado al individuo, podremos hacer diferentes cosas:
 
 - Manejarlo a nuestro antojo medianta una shell
-- Netcat (en desarrollo)
 - Subir y descargar archivos
-- Keylogger (en desarrollo)
-- Grabar audio (en desarrollo)
 - Screenshot
 - Persistencia
 - Autoremoverse
 - Deshabilitar administrador de tareas
-- Ransomware (en desarrollo)
 
 
 ## Técnicas de captura de humanos ##
@@ -155,6 +151,10 @@ Podrás copiarte en los registros del sistema para obtener persistencia.
 ### Remover ###
 
 Una vez que hayas acabado con la víctima, puedes eliminar todo tipo de rastro del bicho implantado en el sistema.
+
+### Deshabilitar administrador de tareas ###
+
+La víctima tratará de librarse de tí, pero no será muy fácil. Podrás deshabilitar el administrador de tareas para evitar que el cierre tu actividad en su interior. 
 
 
 ## Próximamente en Invasores ##
