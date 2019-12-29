@@ -140,21 +140,9 @@ drwxr-xr-x 3 kirari kirari 4096 nov 20 22:33 Modulos
  
 ```
 
-### Netcat ###
-
-Si estabas dudando de esto, bueno es cierto, tenemos soporte con Netcat. En el peor de los casos, que nos sintamos inseguros con la shell común, podremos usar el módulo de Netcat para el mismo fín, pero mucho mejor. 
-
 ### Subir y descargar archivos ###
 
 Claramente como lo dice el subtitulo, podrás subir cualquier archivo de tú máquina al del equipo víctima. Igualmente vas a poder descargar cualquier archivo del secuestrado.
-
-### Keylogger ###
-
-Graba cualquier movimiento que la víctima haga mediante pulsaciones en el teclado. Toda la información se registrará en un archivo.
-
-### Grabar audio ###
-
-Si quieres mantenerte informado de lo que sucede alrededor del capturado, entonces activa este módulo, para escuchar todos sus movimientos.
 
 ### Screenshot ###
 
@@ -168,9 +156,25 @@ Podrás copiarte en los registros del sistema para obtener persistencia.
 
 Una vez que hayas acabado con la víctima, puedes eliminar todo tipo de rastro del bicho implantado en el sistema.
 
+
+## Próximamente en Invasores ##
+
+### Netcat ###
+
+Si estabas dudando de esto, bueno es cierto, tenemos soporte con Netcat. En el peor de los casos, que nos sintamos inseguros con la shell común, podremos usar el módulo de Netcat para el mismo fín, pero mucho mejor. 
+
+### Keylogger ###
+
+Graba cualquier movimiento que la víctima haga mediante pulsaciones en el teclado. Toda la información se registrará en un archivo.
+
+### Grabar audio ###
+
+Si quieres mantenerte informado de lo que sucede alrededor del capturado, entonces activa este módulo, para escuchar todos sus movimientos.
+
 ### Ransomware ###
 
 Si la víctima se resiste a darte lo que quieres, sólo tóma de rehénes a sus personas más cercanas. Entonces podrás pedir lo que quieras a cambio de liberarlas. (Se recomienda usar este módulo en un entorno controlado).
+
 
 ## Destrucción total ##
 
