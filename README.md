@@ -60,7 +60,7 @@ Cuando hayamos raptado al individuo, podremos hacer diferentes cosas:
 - Subir y descargar archivos
 - Keylogger (en desarrollo)
 - Grabar audio (en desarrollo)
-- Screenshot (en desarrollo)
+- Screenshot
 - Persistencia
 - Autoremoverse
 - Deshabilitar administrador de tareas
