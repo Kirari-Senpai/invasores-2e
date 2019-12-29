@@ -270,7 +270,7 @@ class Server(Thread):
 		else:
 		 	print("\n [\033[1;31mx\033[0;39m] No hay personas capturadas\n")
 
-		return lista_terricolas_table
+		return 
 
 
 
