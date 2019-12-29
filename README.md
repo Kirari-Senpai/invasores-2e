@@ -176,12 +176,12 @@ Si quieres mantenerte informado de lo que sucede alrededor del capturado, entonc
 Si la víctima se resiste a darte lo que quieres, sólo tóma de rehénes a sus personas más cercanas. Entonces podrás pedir lo que quieras a cambio de liberarlas. (Se recomienda usar este módulo en un entorno controlado).
 
 
-## Destrucción total ##
+## Purga masiva ##
 
-Elimina a todas las personas capturadas mediante el comando: 
+Se hace una limpieza completa en todas las víctimas y se matan a todos. Para hacerlo, se utiliza el comando: 
 
 ```
-destruirlos
+purga_masiva
 ```
 
 ## :heavy_exclamation_mark: Requerimientos del sistema operativo
