@@ -178,7 +178,7 @@ Si la víctima se resiste a darte lo que quieres, sólo tóma de rehénes a sus 
 
 ## Purga masiva ##
 
-Se hace una limpieza completa en todas las víctimas y se matan a todos. Para hacerlo, se utiliza el comando: 
+Se hace una limpieza completa en todas las víctimas para no dejar rastros, para posteriormente eliminarlos. Para hacerlo, se utiliza el comando: 
 
 ```
 purga_masiva
