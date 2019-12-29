@@ -181,7 +181,7 @@ Si la víctima se resiste a darte lo que quieres, sólo tóma de rehénes a sus 
 Se hace una limpieza completa en todas las víctimas para no dejar rastros, para posteriormente eliminarlos. Para hacerlo, se utiliza el comando: 
 
 ```
-purga_masiva
+destruirlos
 ```
 
 ## :heavy_exclamation_mark: Requerimientos del sistema operativo
