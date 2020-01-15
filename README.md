@@ -156,6 +156,14 @@ Una vez que hayas acabado con la víctima, puedes eliminar todo tipo de rastro d
 
 La víctima tratará de librarse de tí, pero no será muy fácil. Podrás deshabilitar el administrador de tareas para evitar que el cierre tu actividad en su interior. 
 
+### Persistencia ###
+
+Podrás copiarte en los registros del sistema para obtener persistencia.
+
+### Autoremover ###
+
+Una vez que hayas acabado con la víctima, puedes eliminar todo tipo de rastro del bicho implantado en el sistema.
+
 
 ## Próximamente en Invasores ##
 
