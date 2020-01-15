@@ -10,6 +10,7 @@ import sys
 import time
 import socket
 import pygame	
+import configparser
 
 from tabulate import tabulate
 from threading import Thread
@@ -127,7 +128,7 @@ class Server(Thread):
 
 	# --------- CONFIGURACION DEL SERVIDOR ---------
 
-	def __init__(self,ip="0.0.0.0",port=9000):
+	def __init__(self,ip,port):
 		super(Server, self).__init__()
 
 		self.terricolas = []
@@ -1052,7 +1053,7 @@ def abducciones_menu(servidor):
 	return
 
 
-def menu():
+def menu(configuraciones):
 
 	COMANDOS = {
 
@@ -1062,7 +1063,7 @@ def menu():
 
 	}
 
-	servidor = Server()
+	servidor = Server(configuraciones[0],configuraciones[1])
 	servidor.setDaemon(True)
 	servidor.start()
 
@@ -1104,4 +1105,12 @@ def menu():
 
 
 if __name__ == '__main__':
-	menu()
+	
+	configuracion = configparser.ConfigParser()
+	configuracion.read("server.conf")
+
+	seccionConectar = configuracion["SERVIDOR"]
+
+	configuraciones = [seccionConectar["Servidor"],seccionConectar["Puerto"]]
+
+	menu(configuraciones)
