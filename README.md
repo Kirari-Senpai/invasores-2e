@@ -33,6 +33,8 @@ Antes de atraer a la víctima, necesitamos crear un señuelo, con el cual atraer
 pyinstaller --noconsole --onefile client.py
 ```
 
+** Lo anterior se convertirá en un ejecutable dependiendo tu sistema operativo **
+
 La curiosa persona se acerca a tu nave, pero todavía no sabe que le espera...
 
 Para ejecutar el señuelo, haremos esto:
