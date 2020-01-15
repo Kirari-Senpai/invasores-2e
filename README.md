@@ -192,9 +192,9 @@ Se hace una limpieza completa en todas las víctimas para no dejar rastros, para
 destruirlos
 ```
 
-## :heavy_exclamation_mark: Requerimientos del sistema operativo
+## :heavy_exclamation_mark: Requerimientos
 
-Un sistema operativo basado en Linux. Recomiendo Kali Linux en su última versión 2019.4.
+Un sistema operativo basado en Linux. Recomiendo Kali Linux en su última versión 2019.4. Solo ha sido probado en este último, por lo que si lo utiliza en otro sistema, tal vez, podría causarle algún problema.
 
 
 ## :octocat: Como contribuir al proyecto
