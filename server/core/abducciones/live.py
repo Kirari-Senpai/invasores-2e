@@ -1,3 +1,7 @@
+# MODULO DE ABDUCCION EN VIVO
+# CREADO POR KIRARI
+
+# MODULOS DEL SISTEMA
 
 import os
 import pygame
@@ -26,6 +30,9 @@ def banner_abduction():
 	print ("             /                     \            ")
 	print ("            /                       \           \n\n")
 
+
+
+# CONSOLA HAZ TU MAGIA Y ESCRIBEME  
 
 def chain_alien(chain, timer=0.03):
 	for i in chain:
