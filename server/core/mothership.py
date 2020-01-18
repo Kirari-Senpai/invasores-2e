@@ -10,7 +10,7 @@ import sys
 import time
 import socket
 import pygame	
-import configparser
+#import configparser
 
 from tabulate import tabulate
 from threading import Thread
@@ -23,7 +23,7 @@ import utilidades.creador_ayuda as ayuda
 from utilidades.banners import *
 from utilidades.cadenas import chain_alien
 
-
+from config import IP,PORT
 
 # ----------------------------------------------------------------------------------------
 
@@ -486,7 +486,7 @@ class Control():
 		print (" [\033[1;34m*\033[0;39m] Intentando autoremoverse del cerebro victima... ")
 		msg = self.servidor.recibir(self.objetivo)
 		time.sleep(2)
-		print (" [\033[1;32m+\033[0;39m] "+msg)
+		print (msg)
 		return
 
 
@@ -1053,7 +1053,7 @@ def abducciones_menu(servidor):
 	return
 
 
-def menu(configuraciones):
+def menu():
 
 	COMANDOS = {
 
@@ -1063,7 +1063,7 @@ def menu(configuraciones):
 
 	}
 
-	servidor = Server(configuraciones[0],configuraciones[1])
+	servidor = Server(IP,PORT)
 	servidor.setDaemon(True)
 	servidor.start()
 
@@ -1105,12 +1105,4 @@ def menu(configuraciones):
 
 
 if __name__ == '__main__':
-	
-	configuracion = configparser.ConfigParser()
-	configuracion.read("server.conf")
-
-	seccionConectar = configuracion["SERVIDOR"]
-
-	configuraciones = [seccionConectar["Servidor"],seccionConectar["Puerto"]]
-
-	menu(configuraciones)
+	menu()
