@@ -11,7 +11,7 @@ Se trata de un videojuego terminal. Tú eres un Furon (raza extraterrestre avanz
 </p>
 
 
-## Como descargar e instalar? ##
+## Cómo descargar e instalar? ##
 
 ```
 git clone https://github.com/Kirari-Senpai/invasores-2e.git
@@ -19,6 +19,31 @@ cd invasores-2e/
 pip3 install -r requirements.txt
 cd server/
 ```
+
+## Configurar servidor ##
+
+No hay muchas configuraciones para hacer por ahora en Invasores, por lo que solo se puede configurar lo que es la IP y el puerto del servidor. Para hacerlo:
+
+```
+cd server/core/
+```
+
+Una vez en ese directorio, con el editor que quieran, abran el archivo "config.py", por ejemplo, yo lo haré con vim:
+
+```
+vim config.py
+```
+
+Ahi modificaremos las variables IP y PORT, guardamos y listo.
+
+## Configurar cliente ##
+
+Para el cliente hacemos los mismos pasos que la vez anterior:
+
+```
+cd client/core/
+```
+
 
 ## Empezar con la invasión ##
 
