@@ -225,10 +225,6 @@ Graba cualquier movimiento que la víctima haga mediante pulsaciones en el tecla
 
 Si quieres mantenerte informado de lo que sucede alrededor del capturado, entonces activa este módulo, para escuchar todos sus movimientos.
 
-### Ransomware ###
-
-Si la víctima se resiste a darte lo que quieres, sólo tóma de rehénes a sus personas más cercanas. Entonces podrás pedir lo que quieras a cambio de liberarlas. (Se recomienda usar este módulo en un entorno controlado).
-
 
 ## Purga masiva ##
 
