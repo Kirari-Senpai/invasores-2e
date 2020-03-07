@@ -49,27 +49,25 @@ try:
 	chain_alien(" [!] Para salir, presione las teclas Ctrl+C\n")
 	chain_alien(" [*] Buscando terricolas...\n")
 
-	file = open("core/abducciones/capturados.txt",'w')
-	file.write('')
-	file.close()
+	with open("core/abducciones/capturados.txt",'w') as file:
+		file.write('')
 
 	lineas = []
 
-	file = open("core/abducciones/capturados.txt",'r')
+	with open("core/abducciones/capturados.txt",'r') as file:
 
+		while (True):
 
-	while (True):
+			for line in file.readlines():
+				if (line not in lineas):
+					lineas.append(line)
+					#print(line)
+					client = ast.literal_eval(line)
+					chain_alien ("\n [\033[1;34m*\033[0;39m] Abduciendo a {0} de {1},{2} en {3}\n".format(client[0], client[1]['city_name'], client[1]['state'], client[1]["country_name"]))
+					chain_alien (" [\033[1;32m+\033[0;39m] Terricola {} esta a bordo!\n\n".format(client[0]))
 
-		for line in file.readlines():
-			if (line not in lineas):
-				lineas.append(line)
-				#print(line)
-				client = ast.literal_eval(line)
-				chain_alien ("\n [\033[1;34m*\033[0;39m] Abduciendo a {0} de {1},{2} en {3}\n".format(client[0], client[1]['city_name'], client[1]['state'], client[1]["country_name"]))
-				chain_alien (" [\033[1;32m+\033[0;39m] Terricola {} esta a bordo!\n\n".format(client[0]))
-
-		file.flush()
-		file.seek(0)
+			file.flush()
+			file.seek(0)
 
 
 except KeyboardInterrupt:
