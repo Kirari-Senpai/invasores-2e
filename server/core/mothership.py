@@ -106,18 +106,35 @@ def ataques():
 
 
 # VER AHORA
-def control_ruta(path,signo):
-		
-	ruta = path.split(signo)
-	if (ruta.pop()!=""):
-		verificar_ruta = signo.join(ruta)
+def control_ruta(path):
 
-		if (os.path.isdir(verificar_ruta)):
+	if os.path.exists(path):
+
+		if os.path.isdir(path):
+			return False
+
+		elif os.path.isfile(path):
 			return True
+
 		else:
 			return False
+
 	else:
 		return False
+		
+	# ruta = path.split(signo)
+
+	# print(ruta)
+
+	# if (ruta.pop()!=""):
+	# 	verificar_ruta = signo.join(ruta)
+
+	# 	if (os.path.isdir(verificar_ruta)):
+	# 		return True
+	# 	else:
+	# 		return False
+	# else:
+	# 	return False
 
 
 # ------------------------------------------------------------------------------------------
@@ -615,40 +632,44 @@ class Control():
 		if ("subir" in subida):
 			
 			if (subida=="subir"):
-				print (" Utilice 'subir <Ruta origen> <Ruta destino>'")
-				return
+				print (' Utilice -> subir "<Ruta origen>" "<Ruta destino>"')
+				return False
 
-			elif (re.match("subir(\d|\w)",subida)):
+			elif ("subir " not in subida):
 				print('\n [\033[1;31mx\033[0;39m] Comando "'+subida+'" no encontrado.\n')
-				return
+				return False
 
 			else:
-				subida = (subida.replace('subir','')).split()
-				if (len(subida)<2):
-					print (" [\033[1;31mx\033[0;39m] Faltan argumentos...")
-					return False
 
-				elif (len(subida)>2):
-					print (" [\033[1;31mx\033[0;39m] Hay demasiados argumentos...")
+				try:
+
+					subida = (subida.replace('subir','')).split('"')
+
+					del subida[0]
+					del subida[1]
+					del subida[2]
+
+				except:
+					print (" [\033[1;31mx\033[0;39m] Mala sintaxis. Utilice -> subir \"<Ruta origen>\" \"<Ruta destino>\"")
 					return False
 
 		else:
 			return False
 
+		#print(subida)	
 
-		if (len(subida)==2):
-			if (control_ruta(subida[0],"/")):
-				if (os.path.exists(subida[0])):
-					pass
-				else:
-					print (" [\033[1;31mx\033[0;39m] El archivo que quieres subir no existe.")
-					return False
+		if (len(subida)==2) and (control_ruta(subida[0])!=False):
+			origen = subida[0]
+			if (subida[1]!=""):
+				destino = subida[1]
 			else:
-				print (" [\033[1;31mx\033[0;39m] Ruta origen no existe o no se especifico archivo.")
+				print (" [\033[1;31mx\033[0;39m] Debe colocar una ruta destino.")
 				return False
+		else:
+			print (" [\033[1;31mx\033[0;39m] El archivo que quieres subir no existe.")
+			return False
 
-		origen = subida[0]
-		destino = subida[1] 
+		#print(origen, " --- ", destino)
 
 		# Envia modo de uso y recibe el 'ok'
 		self.servidor.enviar(self.objetivo,"subir")
@@ -689,45 +710,42 @@ class Control():
 		if ("descargar" in bajada):
 			
 			if (bajada=="descargar"):
-				print (" Utilice 'descargar <Ruta origen> <Ruta destino>'")
+				print (" Utilice -> descargar \"<Ruta origen>\" \"<Ruta destino>\"")
 				return
 
-			elif (re.match("descargar(\d|\w)",bajada)):
+			elif ("descargar " not in bajada):
 				print('\n [\033[1;31mx\033[0;39m] Comando "'+bajada+'" no encontrado.\n')
 				return
 
 			else:
-				bajada = (bajada.replace('descargar','')).split()
 				
-				if (len(bajada)<2):
-					print (" [\033[1;31mx\033[0;39m] Faltan argumentos...")
-					return False
+				try:
 
-				elif (len(bajada)>2):
-					print (" [\033[1;31mx\033[0;39m] Hay demasiados argumentos...")
+					bajada = (bajada.replace('descargar','')).split('"')
+
+					del bajada[0]
+					del bajada[1]
+					del bajada[2]
+
+				except:
+					print (" [\033[1;31mx\033[0;39m] Mala sintaxis. Utilice -> descargar \"<Ruta origen>\" \"<Ruta destino>\"")
 					return False
 
 		else:
 			return False
 
 
-
 		if (len(bajada)==2):
 			
-			if os.path.isdir(bajada[1]):
-				print (" [\033[1;31mx\033[0;39m] Ruta destino es un directorio.")
-				return False
-
-			if (control_ruta(bajada[1],"/")):
-				pass
-
+			destino = bajada[1]
+				
+			if (bajada[0]!=""):
+				origen = bajada[0]
+			
 			else:
-				print (" [\033[1;31mx\033[0;39m] Ruta destino no existe o no se especifico nombre de nuevo archivo.")
+				print (" [\033[1;31mx\033[0;39m] Debe colocar una ruta destino.")
 				return False
 
-
-		origen = bajada[0]
-		destino = bajada[1] 
 
 		# Envia modo de uso y recibe el 'ok'
 		self.servidor.enviar(self.objetivo,"descargar")
@@ -759,7 +777,7 @@ class Control():
 			print(" [\033[1;32m+\033[0;39m] El archivo se descargo correctamente.")   
 
 		else:
-			print (" [\033[1;31mx\033[0;39m] Ruta origen no existe o no se especifico archivo.")
+			print (" [\033[1;31mx\033[0;39m] Ruta origen no existe o es un directorio... O no se especifico archivo.")
 			
 		return
 
@@ -782,7 +800,7 @@ class Control():
 				print (" Utilice 'cd <ruta>'")
 				return
 
-			elif (re.match("cd(\d|\w)",ruta)):
+			elif ("cd " not in ruta):
 				print('\n [\033[1;31mx\033[0;39m] Comando "'+ruta+'" no encontrado.\n')
 				return
 
@@ -957,7 +975,7 @@ def laboratorio(servidor):
 			if ('manipular' in prompt_laboratorio):
 				if (prompt_laboratorio=="manipular"):
 					print(" Utilice 'manipular <id>'")
-				elif (re.match("manipular(\d|\w)",prompt_laboratorio)):
+				elif ("manipular " not in prompt_laboratorio):
 					print('\n [\033[1;31mx\033[0;39m] Comando "', prompt_laboratorio, '" no encontrado.\n')
 				else:
 					try:
@@ -981,7 +999,7 @@ def laboratorio(servidor):
 			elif ('matar' in prompt_laboratorio):
 				if (prompt_laboratorio=="matar"):
 					print(" Utilice 'matar <id>'")
-				elif (re.match("matar(\d|\w)",prompt_laboratorio)):
+				elif ("matar " not in prompt_laboratorio):
 					print('\n [\033[1;31mx\033[0;39m] Comando "', prompt_laboratorio, '" no encontrado.\n')
 				else:
 					try:
